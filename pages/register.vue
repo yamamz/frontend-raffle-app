@@ -546,6 +546,18 @@
                     "
                     @click="signup"
                   >
+                    <div
+                      v-show="loading"
+                      class="
+                        loader
+                        ease-linear
+                        rounded-full
+                        border-4 border-t-4 border-gray-200
+                        h-6
+                        w-6
+                        mr-2
+                      "
+                    ></div>
                     REGISTER NOW
                   </button>
                 </div>
@@ -586,6 +598,7 @@ export default {
         address: "",
         contact: "",
       },
+      loading: false,
     };
   },
 
@@ -606,9 +619,11 @@ export default {
         ) {
           this.error = "all fields are required";
         } else {
+          this.loading = true;
           await this.$axios.post("/api/auth/signup", this.register);
           Swal.fire("Success!", "Register successfully", "success");
           await this.userLogin();
+          this.loading = false;
         }
       } catch (err) {
         this.error = err.response.data.message;
@@ -641,4 +656,27 @@ export default {
 </script>
 <style scoped>
 @import url("https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.min.css");
+.loader {
+  border-top-color: #3498db;
+  -webkit-animation: spinner 1.5s linear infinite;
+  animation: spinner 1.5s linear infinite;
+}
+
+@-webkit-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 </style>

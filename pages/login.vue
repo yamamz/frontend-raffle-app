@@ -339,7 +339,21 @@
                     "
                     @click="userLogin"
                   >
-                    LOGIN
+                    <div class="flex items-center justify-center">
+                      <div
+                        v-show="loading"
+                        class="
+                          loader
+                          ease-linear
+                          rounded-full
+                          border-4 border-t-4 border-gray-200
+                          h-6
+                          w-6
+                          mr-2
+                        "
+                      ></div>
+                      <div>LOGIN</div>
+                    </div>
                   </button>
                 </div>
               </div>
@@ -370,6 +384,7 @@ export default {
         username: "",
         password: "",
       },
+      loading: false,
     };
   },
   methods: {
@@ -386,9 +401,11 @@ export default {
     },
     async userLogin() {
       try {
+        this.loading = true;
         let response = await this.$auth.loginWith("local", {
           data: this.login,
         });
+        this.loading = false;
         this.$router.push({ path: "/" });
       } catch (err) {
         this.error = err.response.data.message;
@@ -409,4 +426,28 @@ export default {
 
 <style scoped>
 @import url("https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.min.css");
+
+.loader {
+  border-top-color: #3498db;
+  -webkit-animation: spinner 1.5s linear infinite;
+  animation: spinner 1.5s linear infinite;
+}
+
+@-webkit-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 </style>
