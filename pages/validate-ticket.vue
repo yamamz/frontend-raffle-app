@@ -2,6 +2,7 @@
   <div class="flex flex items-center justify-center p-4">
     <div class="flex flex-col items-center">
       <p class="text-lg font-bold text-indigo-600 mb-4">Validate Tickets</p>
+      <p>Point your camera to the qr code</p>
       <div class="w-full bg-blue-100 flex items-center justify-center">
         <qrcode-stream
           :key="_uid"
@@ -30,7 +31,13 @@
           class="border list-none rounded-sm px-3 py-3"
           style="border-bottom-width: 0"
         >
-          {{ item }}
+          <div class="flex">
+            <i
+              @click="deleteTicket(index)"
+              class="mdi mdi-delete text-gray-400 text-lg"
+            ></i>
+            <span> {{ item }}</span>
+          </div>
         </li>
       </ol>
     </div>
@@ -53,6 +60,10 @@ export default {
     };
   },
   methods: {
+    deleteTicket(index) {
+      ticketsCapture.splice(index, 1);
+      ticketCaptureDisplay.splice(index, 1);
+    },
     async markSoldTickets() {
       try {
         let response = await this.$axios.post(
@@ -97,6 +108,7 @@ export default {
 </script>
 
 <style scoped>
+@import url("https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.min.css");
 .scan-confirmation {
   position: absolute;
   width: 100%;

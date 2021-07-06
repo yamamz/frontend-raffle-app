@@ -36,7 +36,7 @@
             v-if="this.$auth.loggedIn"
             @click="gotoUserTickets"
             class="
-              text-gray-800
+              text-gray-900
               rounded
               hover:bg-red-400
               hover:text-gray-100
@@ -44,6 +44,9 @@
               py-2
               px-2
               md:mx-2
+              font-bold
+              tracking-wider
+              text-sm
             "
           >
             My tickets
@@ -52,7 +55,7 @@
             v-if="isModerator"
             @click="gotoDraw"
             class="
-              text-gray-800
+              text-gray-900
               rounded
               hover:bg-red-400
               hover:text-gray-100
@@ -60,16 +63,19 @@
               py-2
               px-2
               md:mx-2
+              font-bold
+              tracking-wider
+              text-sm
             "
           >
-            Add Draw
+            Draw
           </button>
 
           <button
             v-if="isModerator"
             @click="gotoValidate"
             class="
-              text-gray-800
+              text-gray-900
               rounded
               hover:bg-red-400
               hover:text-gray-100
@@ -77,15 +83,18 @@
               py-2
               px-2
               md:mx-2
+              font-bold
+              tracking-wider
+              text-sm
             "
           >
-            Validate tickets
+            Validate
           </button>
 
           <button
             v-if="this.$auth.loggedIn"
             class="
-              text-gray-800
+              text-gray-900
               rounded
               hover:bg-red-400
               hover:text-gray-100
@@ -93,6 +102,9 @@
               py-2
               px-2
               md:mx-2
+              font-bold
+              tracking-wider
+              text-sm
             "
             @click="logout"
           >
@@ -101,7 +113,7 @@
           <button
             v-if="!this.$auth.loggedIn"
             class="
-              text-gray-800
+              text-gray-900
               rounded
               hover:bg-red-400
               hover:text-gray-100
@@ -109,6 +121,9 @@
               py-2
               px-2
               md:mx-2
+              font-bold
+              tracking-wider
+              text-sm
             "
             @click="login"
           >
@@ -223,33 +238,33 @@
     </div>
     <div class="p-4 flex flex-col items-center bg-red-100 mt-4">
       <p class="font-bold">Terms and Conditions</p>
-      <ol>
-        <li class="text-xs">
+      <ol class="list-decimal">
+        <li class="text-xs traking-wider">
           Issuance of this ticket is subject to rules and regulations and
           conditions referred to on the Lottery Licensing Regulations in
           Newfoundland and Labrador, Canada.
         </li>
-        <li class="text-xs pt-2">
+        <li class="text-xs pt-2 traking-wider">
           This ticket is void if the information on its face differs from the
           St. Thomas Aquinas Parish central computer system information for the
           control number on this ticket.
         </li>
-        <li class="text-xs pt-2">
+        <li class="text-xs pt-2 traking-wider">
           A prize must be claimed within 12 months of the draw date.
         </li>
-        <li class="text-xs pt-2">
+        <li class="text-xs pt-2 traking-wider">
           A winning ticket must be validated by the St. Thomas Aquinas Parish,
           Newfoundland and Labrador, Canada.
         </li>
-        <li class="text-xs pt-2">
+        <li class="text-xs pt-2 traking-wider">
           For prize-claiming information, call the parish office at 709-873-2675
           or visit the parish website at sta-sj.ca.
         </li>
-        <li class="text-xs pt-2">
+        <li class="text-xs pt-2 traking-wider">
           The winning ticket and name of the prize winners will be published on
           the parish bulletin and parish web pages.
         </li>
-        <li class="text-xs pt-2">
+        <li class="text-xs pt-2 traking-wider">
           You must be 19+ to purchase, play or redeem the raffle prize winnings.
         </li>
       </ol>

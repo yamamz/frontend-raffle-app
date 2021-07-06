@@ -298,42 +298,55 @@ export default {
               {
                 columns: [
                   {
-                    qr: `${filterOnlineTickets[i - 1].id} ${
-                      filterOnlineTickets[i - 1].ticketNumber
-                    } ${filterOnlineTickets[i - 1].Draw.licence} ${
-                      filterOnlineTickets[i - 1].User.email
-                    }`,
-                    fit: "58",
+                    alignment: "left",
+                    margin: [0, 0, 0, 0],
+                    type: "none",
+                    ol: [
+                      {
+                        qr: `${filterOnlineTickets[i - 1].id} ${
+                          filterOnlineTickets[i - 1].ticketNumber
+                        } ${filterOnlineTickets[i - 1].Draw.licence} ${
+                          filterOnlineTickets[i - 1].User.email
+                        }`,
+                        fit: "110",
+                      },
+                      {
+                        margin: [0, 8, 0, 0],
+                        fontSize: 7,
+
+                        text: `No. ${filterOnlineTickets[i - 1].ticketNumber}`,
+                        bold: true,
+                      },
+                    ],
                   },
+
                   {
                     alignment: "left",
-                    width: 200,
-                    margin: [0, 0, 40, 0],
+                    width: 160,
+                    margin: [0, 0, 0, 0],
                     type: "none",
                     ol: [
                       {
                         type: "none",
                         ol: [
                           {
-                            margin: [0, 4, 0, 0],
+                            margin: [0, 0, 0, 0],
                             fontSize: 8,
                             text: "ST. THOMAS AQUINAS PARISH",
-                            alignment: "center",
                           },
                           {
                             fontSize: 7,
                             text: "PO Box 157",
-                            alignment: "center",
                           },
                           {
                             fontSize: 7,
                             text: "St. Lawrence, NL A0E 2V0",
-                            alignment: "center",
+
                             margin: [0, 0, 0, 6],
                           },
                           {
                             fontSize: 8,
-                            alignment: "center",
+
                             bold: true,
                             text: `${
                               filterOnlineTickets[i - 1].Draw.description
@@ -342,10 +355,22 @@ export default {
 
                           {
                             fontSize: 8,
-                            alignment: "center",
-                            text: `License Number: ${
+
+                            text: `License No: ${
                               filterOnlineTickets[i - 1].Draw.licence
                             }`,
+                          },
+                          {
+                            margin: [0, 8, 0, 0],
+                            fontSize: 8,
+                            text: `1st Prize: $2,000\n2nd Prize: $1,000\n3rd Prize: $500\nConsolation Prizes (3- $200 each)`,
+                          },
+                          {
+                            margin: [0, 8, 0, 0],
+                            fontSize: 8,
+                            text: `Draw Date: ${this.formatDate(
+                              new Date(filterOnlineTickets[i - 1].Draw.drawDate)
+                            )}`,
                           },
                         ],
                       },
@@ -353,46 +378,76 @@ export default {
                   },
 
                   {
-                    qr: `${filterOnlineTickets[i].id} ${filterOnlineTickets[i].ticketNumber} ${filterOnlineTickets[i].Draw.licence} ${filterOnlineTickets[i].User.email}`,
-                    fit: "58",
-                  },
-                  {
                     alignment: "left",
-                    width: 200,
-                    margin: [0, 0, 40, 0],
+
                     type: "none",
                     ol: [
                       {
                         type: "none",
                         ol: [
                           {
-                            margin: [0, 4, 0, 0],
+                            qr: `${filterOnlineTickets[i].id} ${filterOnlineTickets[i].ticketNumber} ${filterOnlineTickets[i].Draw.licence} ${filterOnlineTickets[i].User.email}`,
+                            fit: "110",
+                          },
+                          {
+                            margin: [0, 8, 0, 0],
+                            fontSize: 7,
+
+                            text: `No. ${filterOnlineTickets[i].ticketNumber}`,
+                            bold: true,
+                          },
+                        ],
+                      },
+                    ],
+                  },
+
+                  {
+                    alignment: "left",
+                    width: 200,
+
+                    type: "none",
+                    ol: [
+                      {
+                        type: "none",
+                        ol: [
+                          {
+                            margin: [0, 0, 0, 0],
                             fontSize: 8,
                             text: "ST. THOMAS AQUINAS PARISH",
-                            alignment: "center",
                           },
                           {
                             fontSize: 7,
                             text: "PO Box 157",
-                            alignment: "center",
                           },
                           {
                             fontSize: 7,
                             text: "St. Lawrence, NL A0E 2V0",
-                            alignment: "center",
+
                             margin: [0, 0, 0, 6],
                           },
                           {
                             fontSize: 8,
-                            alignment: "center",
+
                             bold: true,
                             text: `${filterOnlineTickets[i].Draw.description}`.toUpperCase(),
                           },
 
                           {
                             fontSize: 8,
-                            alignment: "center",
-                            text: `License Number: ${filterOnlineTickets[i].Draw.licence}`,
+
+                            text: `License No: ${filterOnlineTickets[i].Draw.licence}`,
+                          },
+                          {
+                            margin: [0, 8, 0, 0],
+                            fontSize: 8,
+                            text: `1st Prize: $2,000\n2nd Prize: $1,000\n3rd Prize: $500\nConsolation Prizes (3- $200 each)`,
+                          },
+                          {
+                            margin: [0, 8, 0, 0],
+                            fontSize: 8,
+                            text: `Draw Date: ${this.formatDate(
+                              new Date(filterOnlineTickets[i - 1].Draw.drawDate)
+                            )}`,
                           },
                         ],
                       },
@@ -400,61 +455,9 @@ export default {
                   },
                 ],
               },
-              {
-                columns: [
-                  {
-                    fontSize: 8,
-
-                    text: `No. ${
-                      filterOnlineTickets[i - 1].ticketNumber
-                    }\nPRIZES:`,
-                    bold: true,
-                  },
-                  {
-                    fontSize: 8,
-
-                    text: `No. ${filterOnlineTickets[i].ticketNumber}\nPRIZES:`,
-                    bold: true,
-                  },
-                ],
-              },
 
               {
-                columns: [
-                  {
-                    margin: [0, 8, 0, 0],
-                    fontSize: 8,
-                    text: `1st Prize: $2,000\n2nd Prize: $1,000\n3rd Prize: $500\nConsolation Prizes (3- $200 each)`,
-                  },
-                  {
-                    alignment: "left",
-                    margin: [0, 8, 0, 0],
-                    fontSize: 8,
-                    text: `1st Prize: $2,000\n2nd Prize: $1,000\n3rd Prize: $500\nConsolation Prizes (3- $200 each)`,
-                  },
-                ],
-              },
-
-              {
-                margin: [0, 10, 0, 0],
-
-                columns: [
-                  {
-                    fontSize: 8,
-                    text: `Draw Date: ${this.formatDate(
-                      new Date(filterOnlineTickets[i - 1].Draw.drawDate)
-                    )}`,
-                  },
-
-                  {
-                    fontSize: 8,
-                    text: `Draw Date: ${this.formatDate(
-                      new Date(filterOnlineTickets[i].Draw.drawDate)
-                    )}`,
-                  },
-                ],
-              },
-              {
+                margin: [0, 0, 0, 4],
                 fontSize: 8,
                 text: "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
               },
