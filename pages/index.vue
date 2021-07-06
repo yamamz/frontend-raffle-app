@@ -66,6 +66,23 @@
           </button>
 
           <button
+            v-if="isModerator"
+            @click="gotoValidate"
+            class="
+              text-gray-800
+              rounded
+              hover:bg-red-400
+              hover:text-gray-100
+              hover:font-medium
+              py-2
+              px-2
+              md:mx-2
+            "
+          >
+            Validate tickets
+          </button>
+
+          <button
             v-if="this.$auth.loggedIn"
             class="
               text-gray-800
@@ -252,6 +269,9 @@ export default {
     };
   },
   methods: {
+    gotoValidate() {
+      this.$router.push({ path: "/validate-ticket" });
+    },
     gotoUserTickets() {
       this.$router.push({ path: "/users/tickets" });
     },

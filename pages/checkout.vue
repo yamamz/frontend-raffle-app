@@ -323,7 +323,7 @@ export default {
                 },
                 {
                   alignment: "right",
-                  qr: `${this.draw.licence}-${tickets[i].ticketNumber}-${this.$auth.state.user.email}`,
+                  qr: `${tickets[i].id} ${tickets[i].ticketNumber} ${this.draw.licence} ${this.$auth.state.user.email}`,
                   fit: "58",
                 },
               ],

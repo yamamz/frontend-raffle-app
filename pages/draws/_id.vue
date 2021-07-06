@@ -118,7 +118,7 @@ export default {
             {
               columns: [
                 {
-                  qr: `${filterOnlineTickets[i].Draw.licence}-${filterOnlineTickets[i].ticketNumber}-${filterOnlineTickets[i].User.email}`,
+                  qr: `${filterOnlineTickets[i].id} ${filterOnlineTickets[i].Draw.licence} ${filterOnlineTickets[i].ticketNumber} ${filterOnlineTickets[i].User.email}`,
                   fit: "58",
                 },
                 {
@@ -165,7 +165,7 @@ export default {
                 },
 
                 {
-                  qr: `${filterOnlineTickets[i].Draw.licence}-${filterOnlineTickets[i].ticketNumber}-${filterOnlineTickets[i].User.email}`,
+                  qr: `${filterOnlineTickets[i].id} ${filterOnlineTickets[i].Draw.licence} ${filterOnlineTickets[i].ticketNumber} ${filterOnlineTickets[i].User.email}`,
                   fit: "58",
                 },
                 {
@@ -298,9 +298,11 @@ export default {
               {
                 columns: [
                   {
-                    qr: `${filterOnlineTickets[i - 1].Draw.licence}-${
+                    qr: `${filterOnlineTickets[i - 1].id} ${
                       filterOnlineTickets[i - 1].ticketNumber
-                    }-${filterOnlineTickets[i - 1].User.email}`,
+                    } ${filterOnlineTickets[i - 1].Draw.licence} ${
+                      filterOnlineTickets[i - 1].User.email
+                    }`,
                     fit: "58",
                   },
                   {
@@ -351,7 +353,7 @@ export default {
                   },
 
                   {
-                    qr: `${filterOnlineTickets[i].Draw.licence}-${filterOnlineTickets[i].ticketNumber}-${filterOnlineTickets[i].User.email}`,
+                    qr: `${filterOnlineTickets[i].id} ${filterOnlineTickets[i].ticketNumber} ${filterOnlineTickets[i].Draw.licence} ${filterOnlineTickets[i].User.email}`,
                     fit: "58",
                   },
                   {
@@ -514,12 +516,14 @@ export default {
                 {
                   alignment: "right",
                   qr: `${
+                    filterOnlineTickets[filterOnlineTickets.length - 1].id
+                  } ${
                     filterOnlineTickets[filterOnlineTickets.length - 1].Draw
                       .licence
-                  }-${
+                  } ${
                     filterOnlineTickets[filterOnlineTickets.length - 1]
                       .ticketNumber
-                  }-${
+                  } ${
                     filterOnlineTickets[filterOnlineTickets.length - 1].User
                       .email
                   }`,
