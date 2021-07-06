@@ -28,13 +28,12 @@
         <li
           v-for="(item, index) in ticketCaptureDisplay"
           :key="index"
-          class="border list-none rounded-sm px-3 py-3"
-          style="border-bottom-width: 0"
+          class="border list-none rounded-sm px-4 py-3"
         >
-          <div class="flex">
+          <div class="flex items-center">
             <i
               @click="deleteTicket(index)"
-              class="mdi mdi-delete text-gray-400 text-lg"
+              class="mdi mdi-delete text-gray-400 text-lg mr-8"
             ></i>
             <span> {{ item }}</span>
           </div>
@@ -61,8 +60,8 @@ export default {
   },
   methods: {
     deleteTicket(index) {
-      ticketsCapture.splice(index, 1);
-      ticketCaptureDisplay.splice(index, 1);
+      this.ticketsCapture.splice(index, 1);
+      this.ticketCaptureDisplay.splice(index, 1);
     },
     async markSoldTickets() {
       try {
