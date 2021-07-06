@@ -22,9 +22,11 @@
         rounded
       "
     >
-      No raffle draw is active
+      {{
+        soldOutTickets ? "All tickets are soldout" : "No raffle draw is active"
+      }}
     </p>
-    <div v-if="drawActive" class="bg-indigo-100 rounded-lg shadow-lg p-8">
+    <div v-show="drawActive" class="bg-indigo-100 rounded-lg shadow-lg p-8">
       <div>
         <div class="flex justify-center items-center mb-4">
           <p
@@ -56,7 +58,8 @@
         </div>
         <div>
           <p class="tracking-widest flex justify-center items-center mb-4">
-            In every $20 transaction 1 ticket is free
+            In every $20 transaction 1 ticket is free, the free tickets are
+            drawn for consolation prices
           </p>
         </div>
 
@@ -107,11 +110,12 @@
             <hr class="pb-2" />
           </div>
         </div>
-        <div class="py-4" v-show="!isCheckOut">
+        <div class="py-4">
           <label for="" class="text-xs font-semibold px-1 text-gray-500"
             >No. of tickets</label
           >
           <input
+            :disabled="loading"
             type="number"
             v-model="ticketPcs"
             class="
@@ -125,50 +129,14 @@
             "
           />
         </div>
-        <div v-show="isCheckOut">
-          <div id="card-element" class="mt-8"></div>
+        <div>
+          <div id="card-element" class="mt-2"></div>
           <button id="submit" @click="payWithCard" class="button">
             <div class="spinner hidden" id="spinner"></div>
-            <span id="button-text">Pay now {{ price }}$</span>
+            <span id="button-text">Pay now for ${{ price }}</span>
           </button>
           <p id="card-error" role="alert"></p>
         </div>
-
-        <button
-          class="
-            rounded
-            p-4
-            bg-red-400
-            text-white
-            w-full
-            mt-2
-            font-bold
-            text-lg
-          "
-          v-show="!isCheckOut"
-          @click="checkoutCart"
-        >
-          Checkout {{ ticketPcs }} {{ ticketPcs > 1 ? "entries" : "entry" }} for
-          ${{ price }}
-          {{ price >= 20 ? `Free ${Math.floor(price / 20)} ticket\\\'s` : "" }}
-        </button>
-        <button
-          :disabled="loading"
-          class="
-            rounded-lg
-            p-2
-            bg-red-400
-            text-white
-            mt-2
-            w-full
-            font-bold
-            text-base
-          "
-          v-show="isCheckOut"
-          @click="cancelCheckout"
-        >
-          Cancel checkout
-        </button>
       </div>
     </div>
   </div>
@@ -191,6 +159,7 @@ export default {
   data() {
     return {
       drawActive: false,
+      soldOutTickets: false,
       token: null,
       setupIntentId: null,
       card: null,
@@ -257,81 +226,50 @@ export default {
     async payWithCard() {
       this.loading = true;
       this.isLoading(true);
-      try {
-        let confirmPayment = await stripe.confirmCardPayment(
-          this.clientSecret,
-          {
-            payment_method: {
-              card: this.card,
-            },
-          }
-        );
-        if (confirmPayment.error) {
-          Swal.fire("Opps!", "Payment unsuccessful", "error");
-          this.isLoading(false);
-        } else {
-          let tickets = [];
 
-          for (let i = 1; i <= this.ticketPcs; i++) {
-            tickets.push({
-              ticketNumber:
-                this.makeid(4) +
-                `${this.$auth.state.user.id}` +
-                "-" +
-                Math.floor(
-                  Math.pow(10, 10 - 1) +
-                    Math.random() *
-                      (Math.pow(10, 10) - Math.pow(10, 10 - 1) - 1)
-                ),
-              isFree: false,
-              UserId: this.$auth.state.user.id,
-              DrawId: this.draw.id,
-              isSaleOnline: true,
-            });
-          }
-          let totalPriceCheckout = this.ticketPcs * this.draw.ticketPrice;
-          if (totalPriceCheckout >= 20) {
-            let freeTickets = Math.floor(totalPriceCheckout / 20);
-            for (let i = 1; i <= freeTickets; i++) {
-              tickets.push({
-                ticketNumber:
-                  this.makeid(5) +
-                  `${this.$auth.state.user.id}` +
-                  "-" +
-                  Math.floor(
-                    Math.pow(10, 10 - 1) +
-                      Math.random() *
-                        (Math.pow(10, 10) - Math.pow(10, 10 - 1) - 1)
-                  ),
-                isFree: true,
-                UserId: this.$auth.state.user.id,
-                DrawId: this.draw.id,
-                isSaleOnline: true,
-              });
-            }
-          }
+      let result = await stripe.createToken(this.card);
+      if (result.error) {
+        // Inform the customer that there was an error.
+        var errorElement = document.getElementById("card-error");
+        errorElement.textContent = result.error.message;
+        this.loading = false;
+        this.isLoading(false);
+      } else {
+        try {
+          let response = await this.$axios.post("/api/payment/chargePayment", {
+            amount: this.price,
+            token: result.token.id,
+            ticketPcs: this.ticketPcs,
+            userId: this.$auth.state.user.id,
+            drawId: this.draw.id,
+            ticketPrice: this.draw.ticketPrice,
+            fullname: `${this.$auth.state.user.firstName} ${this.$auth.state.user.lastName}`,
+            email: this.$auth.state.user.email,
+          });
+          this.loading = false;
+          this.isLoading(false);
           try {
-            await this.$axios.post("/api/ticket/new", tickets);
             this.$router.push({ path: "/success-payment" });
-            this.isLoading(false);
-            this.successPayment = true;
-            this.isCheckOut = false;
-            let pdfGenerator = await this.printTickets(tickets);
+
+            let pdfGenerator = await this.printTickets(response.data.tickets);
             pdfGenerator.download();
             pdfGenerator.getBase64(async (data) => {
               await this.$axios.post("/api/payment/sendEmailReciept", {
                 email: this.$auth.state.user.email,
-                ticketEntries: tickets.map((el) => el.ticketNumber).join(),
+                ticketEntries: response.data.tickets
+                  .map((el) => el.ticketNumber)
+                  .join(),
                 ticketBase64: data,
               });
             });
           } catch (err) {
-            this.isLoading(false);
-            Swal.fire("Opps!", "There something went wrong", "error");
+            Swal.fire("Opps!", "Error occured", "error");
           }
+        } catch (err) {
+          this.loading = false;
+          this.isLoading(false);
+          Swal.fire("Opps!", "Error occured", "error");
         }
-      } catch (err) {
-        console.log(err.message);
       }
     },
 
@@ -485,13 +423,50 @@ export default {
       this.clientSecret = response.data.setupIntent.client_secret;
     },
   },
+  mounted() {
+    var elements = stripe.elements();
 
+    document.querySelector("button").disabled = true;
+
+    var style = {
+      base: {
+        color: "#32325d",
+        fontFamily: "Arial, sans-serif",
+        fontSmoothing: "antialiased",
+        fontSize: "16px",
+        "::placeholder": {
+          color: "#32325d",
+        },
+      },
+      invalid: {
+        fontFamily: "Arial, sans-serif",
+        color: "#fa755a",
+        iconColor: "#fa755a",
+      },
+    };
+    var card = elements.create("card", { style: style });
+    card.mount("#card-element");
+    card.on("change", function (event) {
+      // Disable the Pay button if there are no card details in the Element
+      document.querySelector("button").disabled = event.empty;
+      document.querySelector("#card-error").textContent = event.error
+        ? event.error.message
+        : "";
+    });
+    this.card = card;
+  },
   async created() {
     let response = await this.$axios.get("/api/draw/getAll");
     let filterActive = response.data.draws.filter((el) => el.active == true);
     if (filterActive.length > 0) {
       this.draw = filterActive[0];
-      this.drawActive = true;
+      if (this.draw.Tickets.length >= this.draw.numberOfTickets) {
+        this.soldOutTickets = true;
+        this.drawActive = false;
+      } else {
+        this.soldOutTickets = false;
+        this.drawActive = true;
+      }
     }
   },
 };

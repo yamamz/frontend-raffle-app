@@ -40,7 +40,7 @@
           </div>
         </div>
 
-        <div class="py-4" v-show="!isCheckOut">
+        <div class="py-4">
           <label for="" class="text-xs font-semibold px-1 text-gray-500"
             >Amount</label
           >
@@ -58,49 +58,14 @@
             "
           />
         </div>
-        <div v-show="isCheckOut">
-          <div id="card-element" class="mt-8"></div>
+        <div>
+          <div id="card-element" class="mt-2"></div>
           <button id="submit" @click="payWithCard" class="button">
             <div class="spinner hidden" id="spinner"></div>
             <span id="button-text">Donate now {{ amount }}$</span>
           </button>
           <p id="card-error" role="alert"></p>
         </div>
-
-        <button
-          :disabled="loading || amount == 0"
-          class="
-            rounded
-            p-4
-            bg-red-400
-            text-white
-            w-full
-            mt-2
-            font-bold
-            text-lg
-          "
-          v-show="!isCheckOut"
-          @click="checkoutCart"
-        >
-          Donate for ${{ amount }}
-        </button>
-        <button
-          :disabled="loading"
-          class="
-            rounded-lg
-            p-2
-            bg-red-400
-            text-white
-            mt-2
-            w-full
-            font-bold
-            text-base
-          "
-          v-show="isCheckOut"
-          @click="cancelCheckout"
-        >
-          Cancel Donate
-        </button>
       </div>
     </div>
   </div>
@@ -146,6 +111,38 @@ export default {
       }
     },
   },
+  mounted() {
+    var elements = stripe.elements();
+
+    document.querySelector("button").disabled = true;
+
+    var style = {
+      base: {
+        color: "#32325d",
+        fontFamily: "Arial, sans-serif",
+        fontSmoothing: "antialiased",
+        fontSize: "16px",
+        "::placeholder": {
+          color: "#32325d",
+        },
+      },
+      invalid: {
+        fontFamily: "Arial, sans-serif",
+        color: "#fa755a",
+        iconColor: "#fa755a",
+      },
+    };
+    var card = elements.create("card", { style: style });
+    card.mount("#card-element");
+    card.on("change", function (event) {
+      // Disable the Pay button if there are no card details in the Element
+      document.querySelector("button").disabled = event.empty;
+      document.querySelector("#card-error").textContent = event.error
+        ? event.error.message
+        : "";
+    });
+    this.card = card;
+  },
   methods: {
     makeid(length) {
       var result = "";
@@ -185,31 +182,28 @@ export default {
     async payWithCard() {
       this.loading = true;
       this.isLoading(true);
-      try {
-        let confirmPayment = await stripe.confirmCardPayment(
-          this.clientSecret,
-          {
-            payment_method: {
-              card: this.card,
-            },
-          }
-        );
-        if (confirmPayment.error) {
-          Swal.fire("Opps!", "Payment unsuccessful", "error");
+
+      let result = await stripe.createToken(this.card);
+      if (result.error) {
+        // Inform the customer that there was an error.
+        var errorElement = document.getElementById("card-error");
+        errorElement.textContent = result.error.message;
+        this.loading = false;
+        this.isLoading(false);
+      } else {
+        try {
+          await this.$axios.post("/api/payment/donatePayment", {
+            amount: this.amount,
+            token: result.token.id,
+            fullname: `${this.$auth.state.user.firstName} ${this.$auth.state.user.lastName}`,
+            email: this.$auth.state.user.email,
+          });
+          this.loading = false;
           this.isLoading(false);
-        } else {
-          try {
-            this.$router.push({ path: "/success-donate" });
-            this.isLoading(false);
-            this.successPayment = true;
-            this.isCheckOut = false;
-          } catch (err) {
-            this.isLoading(false);
-            Swal.fire("Opps!", "There something went wrong", "error");
-          }
+          this.$router.push({ path: "/success-donate" });
+        } catch (err) {
+          Swal.fire("Opps!", "Error occured", "error");
         }
-      } catch (err) {
-        console.log(err.message);
       }
     },
 

@@ -146,6 +146,9 @@
                     font-medium
                   "
                 >
+                  <button @click="edit(draw)" class="px-4 text-green-600">
+                    Edit
+                  </button>
                   <router-link :to="`/draws/${draw.id}`">
                     <button class="text-white bg-indigo-500 rounded px-2">
                       View tickets
@@ -214,7 +217,7 @@
                 pl-3
               "
             >
-              Add Draw
+              {{ form.id == "" ? "Add" : "Update" }} Draw
             </h1>
           </div>
           <label for="" class="text-xs font-semibold px-1">Description</label>
@@ -340,7 +343,7 @@
               "
               @click="addDraw"
             >
-              Add
+              {{ form.id == "" ? "Add" : "Update" }}
             </button>
           </div>
           <div
@@ -397,6 +400,7 @@ export default {
       error: "",
 
       form: {
+        id: "",
         startPeriodDate: "",
         drawDate: "",
         description: "",
@@ -407,6 +411,11 @@ export default {
     };
   },
   methods: {
+    async edit(draw) {
+      let modal = document.getElementById("modal");
+      this.fadeIn(modal);
+      this.form = draw;
+    },
     async setActive(val, draw) {
       if (val) {
         let filterActive = this.draws.filter((el) => el.active == true);
@@ -426,12 +435,28 @@ export default {
       }
     },
     async addDraw() {
-      let response = await this.$axios.post("/api/draw/new", this.form);
+      if (this.form.id == "") {
+        let response = await this.$axios.post("/api/draw/new", this.form);
+        this.draws.push(response.data);
+      } else {
+        let response = await this.$axios.put(
+          `/api/draw/${this.form.id}`,
+          this.form
+        );
+      }
 
-      this.draws.push(response.data);
       this.modalHandler();
     },
     modalHandler(val) {
+      this.form = {
+        id: "",
+        startPeriodDate: "",
+        drawDate: "",
+        description: "",
+        ticketPrice: "",
+        licence: "",
+        numberOfTickets: 2000,
+      };
       let modal = document.getElementById("modal");
       if (val) {
         this.fadeIn(modal);

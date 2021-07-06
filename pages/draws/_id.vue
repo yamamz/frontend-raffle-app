@@ -12,10 +12,18 @@
         px-8
       "
     >
-      <div>
+      <div class="flex">
         <router-link to="/">
           <button class="rounded bg-indigo-500 text-white text-base px-8 py-2">
             Home
+          </button>
+        </router-link>
+        <router-link to="#">
+          <button
+            @click="printOnlineSoldTickets"
+            class="rounded bg-indigo-500 text-white text-base px-8 py-2 ml-2"
+          >
+            Print Online Sold Tickets
           </button>
         </router-link>
       </div>
@@ -64,14 +72,7 @@
             </div>
           </v-client-table>
 
-          <div class="py-4 px-2">
-            <button
-              @click="printTickets"
-              class="bg-indigo-500 py-2 px-4 rounded shadow text-white"
-            >
-              Print Tickets
-            </button>
-          </div>
+          <div class="py-4 px-2"></div>
         </div>
       </div>
     </div>
@@ -106,12 +107,360 @@ export default {
       let da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
       return `${da}-${mo}-${ye}`;
     },
-    async printTickets() {
+    async printTicketsWithDuplicate() {
+      let ticketsContents = [];
+      let filterOnlineTickets = this.tickets.filter(
+        (el) => el.isSaleOnline == false
+      );
+      for (let i = 0; i < filterOnlineTickets.length; i++) {
+        ticketsContents.push(
+          ...[
+            {
+              columns: [
+                {
+                  qr: `${filterOnlineTickets[i].Draw.licence}-${filterOnlineTickets[i].ticketNumber}-${filterOnlineTickets[i].User.email}`,
+                  fit: "58",
+                },
+                {
+                  alignment: "left",
+                  width: 200,
+                  margin: [0, 0, 40, 0],
+                  type: "none",
+                  ol: [
+                    {
+                      type: "none",
+                      ol: [
+                        {
+                          margin: [0, 4, 0, 0],
+                          fontSize: 8,
+                          text: "ST. THOMAS AQUINAS PARISH",
+                          alignment: "center",
+                        },
+                        {
+                          fontSize: 7,
+                          text: "PO Box 157",
+                          alignment: "center",
+                        },
+                        {
+                          fontSize: 7,
+                          text: "St. Lawrence, NL A0E 2V0",
+                          alignment: "center",
+                          margin: [0, 0, 0, 6],
+                        },
+                        {
+                          fontSize: 8,
+                          alignment: "center",
+                          bold: true,
+                          text: `${filterOnlineTickets[i].Draw.description}`.toUpperCase(),
+                        },
+
+                        {
+                          fontSize: 8,
+                          alignment: "center",
+                          text: `License Number: ${filterOnlineTickets[i].Draw.licence}`,
+                        },
+                      ],
+                    },
+                  ],
+                },
+
+                {
+                  qr: `${filterOnlineTickets[i].Draw.licence}-${filterOnlineTickets[i].ticketNumber}-${filterOnlineTickets[i].User.email}`,
+                  fit: "58",
+                },
+                {
+                  alignment: "left",
+                  width: 200,
+                  margin: [0, 0, 40, 0],
+                  type: "none",
+                  ol: [
+                    {
+                      type: "none",
+                      ol: [
+                        {
+                          margin: [0, 4, 0, 0],
+                          fontSize: 8,
+                          text: "ST. THOMAS AQUINAS PARISH",
+                          alignment: "center",
+                        },
+                        {
+                          fontSize: 7,
+                          text: "PO Box 157",
+                          alignment: "center",
+                        },
+                        {
+                          fontSize: 7,
+                          text: "St. Lawrence, NL A0E 2V0",
+                          alignment: "center",
+                          margin: [0, 0, 0, 6],
+                        },
+                        {
+                          fontSize: 8,
+                          alignment: "center",
+                          bold: true,
+                          text: `${filterOnlineTickets[i].Draw.description}`.toUpperCase(),
+                        },
+
+                        {
+                          fontSize: 8,
+                          alignment: "center",
+                          text: `License Number: ${filterOnlineTickets[i].Draw.licence}`,
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              columns: [
+                {
+                  fontSize: 8,
+
+                  text: `No. ${filterOnlineTickets[i].ticketNumber}\nPRIZES:`,
+                  bold: true,
+                },
+                {
+                  fontSize: 8,
+
+                  text: `No. ${filterOnlineTickets[i].ticketNumber}\nPRIZES:`,
+                  bold: true,
+                },
+              ],
+            },
+
+            {
+              columns: [
+                {
+                  margin: [0, 8, 0, 0],
+                  fontSize: 8,
+                  text: `1st Prize: $2,000\n2nd Prize: $1,000\n3rd Prize: $500\nConsolation Prizes (3- $200 each)`,
+                },
+                {
+                  alignment: "left",
+                  margin: [0, 8, 0, 0],
+                  fontSize: 8,
+                  text: `Name:     __________________________________________________\nAddress:  __________________________________________________\nContact No. ______________________________________________`,
+                },
+              ],
+            },
+
+            {
+              margin: [0, 10, 0, 0],
+
+              columns: [
+                {
+                  fontSize: 8,
+                  text: `Draw Date: ${this.formatDate(
+                    new Date(filterOnlineTickets[i].Draw.drawDate)
+                  )}`,
+                },
+
+                {
+                  fontSize: 8,
+                  text: `Draw Date: ${this.formatDate(
+                    new Date(filterOnlineTickets[i].Draw.drawDate)
+                  )}`,
+                },
+              ],
+            },
+            {
+              fontSize: 8,
+              text: "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
+            },
+          ]
+        );
+      }
+
+      var docDefinition = {
+        content: [
+          ticketsContents,
+          // basic usage
+          // { qr: "text in QR" },
+          // // colored QR
+          // { qr: "text in QR", foreground: "red", background: "yellow" },
+          // // resized QR
+          // { qr: "text in QR", fit: "500" },
+        ],
+      };
+      let pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+      pdfDocGenerator.print();
+    },
+    async printOnlineSoldTickets() {
       let ticketsContents = [];
       let filterOnlineTickets = this.tickets.filter(
         (el) => el.isSaleOnline == true
       );
-      for (let i = 0; i < filterOnlineTickets.length; i++) {
+      for (let i = 1; i < filterOnlineTickets.length; i = i + 2) {
+        try {
+          ticketsContents.push(
+            ...[
+              {
+                columns: [
+                  {
+                    qr: `${filterOnlineTickets[i - 1].Draw.licence}-${
+                      filterOnlineTickets[i - 1].ticketNumber
+                    }-${filterOnlineTickets[i - 1].User.email}`,
+                    fit: "58",
+                  },
+                  {
+                    alignment: "left",
+                    width: 200,
+                    margin: [0, 0, 40, 0],
+                    type: "none",
+                    ol: [
+                      {
+                        type: "none",
+                        ol: [
+                          {
+                            margin: [0, 4, 0, 0],
+                            fontSize: 8,
+                            text: "ST. THOMAS AQUINAS PARISH",
+                            alignment: "center",
+                          },
+                          {
+                            fontSize: 7,
+                            text: "PO Box 157",
+                            alignment: "center",
+                          },
+                          {
+                            fontSize: 7,
+                            text: "St. Lawrence, NL A0E 2V0",
+                            alignment: "center",
+                            margin: [0, 0, 0, 6],
+                          },
+                          {
+                            fontSize: 8,
+                            alignment: "center",
+                            bold: true,
+                            text: `${
+                              filterOnlineTickets[i - 1].Draw.description
+                            }`.toUpperCase(),
+                          },
+
+                          {
+                            fontSize: 8,
+                            alignment: "center",
+                            text: `License Number: ${
+                              filterOnlineTickets[i - 1].Draw.licence
+                            }`,
+                          },
+                        ],
+                      },
+                    ],
+                  },
+
+                  {
+                    qr: `${filterOnlineTickets[i].Draw.licence}-${filterOnlineTickets[i].ticketNumber}-${filterOnlineTickets[i].User.email}`,
+                    fit: "58",
+                  },
+                  {
+                    alignment: "left",
+                    width: 200,
+                    margin: [0, 0, 40, 0],
+                    type: "none",
+                    ol: [
+                      {
+                        type: "none",
+                        ol: [
+                          {
+                            margin: [0, 4, 0, 0],
+                            fontSize: 8,
+                            text: "ST. THOMAS AQUINAS PARISH",
+                            alignment: "center",
+                          },
+                          {
+                            fontSize: 7,
+                            text: "PO Box 157",
+                            alignment: "center",
+                          },
+                          {
+                            fontSize: 7,
+                            text: "St. Lawrence, NL A0E 2V0",
+                            alignment: "center",
+                            margin: [0, 0, 0, 6],
+                          },
+                          {
+                            fontSize: 8,
+                            alignment: "center",
+                            bold: true,
+                            text: `${filterOnlineTickets[i].Draw.description}`.toUpperCase(),
+                          },
+
+                          {
+                            fontSize: 8,
+                            alignment: "center",
+                            text: `License Number: ${filterOnlineTickets[i].Draw.licence}`,
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                columns: [
+                  {
+                    fontSize: 8,
+
+                    text: `No. ${
+                      filterOnlineTickets[i - 1].ticketNumber
+                    }\nPRIZES:`,
+                    bold: true,
+                  },
+                  {
+                    fontSize: 8,
+
+                    text: `No. ${filterOnlineTickets[i].ticketNumber}\nPRIZES:`,
+                    bold: true,
+                  },
+                ],
+              },
+
+              {
+                columns: [
+                  {
+                    margin: [0, 8, 0, 0],
+                    fontSize: 8,
+                    text: `1st Prize: $2,000\n2nd Prize: $1,000\n3rd Prize: $500\nConsolation Prizes (3- $200 each)`,
+                  },
+                  {
+                    alignment: "left",
+                    margin: [0, 8, 0, 0],
+                    fontSize: 8,
+                    text: `1st Prize: $2,000\n2nd Prize: $1,000\n3rd Prize: $500\nConsolation Prizes (3- $200 each)`,
+                  },
+                ],
+              },
+
+              {
+                margin: [0, 10, 0, 0],
+
+                columns: [
+                  {
+                    fontSize: 8,
+                    text: `Draw Date: ${this.formatDate(
+                      new Date(filterOnlineTickets[i - 1].Draw.drawDate)
+                    )}`,
+                  },
+
+                  {
+                    fontSize: 8,
+                    text: `Draw Date: ${this.formatDate(
+                      new Date(filterOnlineTickets[i].Draw.drawDate)
+                    )}`,
+                  },
+                ],
+              },
+              {
+                fontSize: 8,
+                text: "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
+              },
+            ]
+          );
+        } catch (err) {}
+      }
+      if (filterOnlineTickets.length % 2 == 1) {
         ticketsContents.push(
           ...[
             {
@@ -135,13 +484,18 @@ export default {
               fontSize: 8,
               alignment: "center",
               bold: true,
-              text: `${filterOnlineTickets[i].Draw.description}`.toUpperCase(),
+              text: `${
+                filterOnlineTickets[filterOnlineTickets.length - 1].Draw
+                  .description
+              }`.toUpperCase(),
             },
 
             {
               fontSize: 8,
               alignment: "center",
-              text: `License Number: ${filterOnlineTickets[i].Draw.licence}`,
+              text: `License Number: ${
+                filterOnlineTickets[filterOnlineTickets.length - 1].Draw.licence
+              }`,
             },
 
             {
@@ -159,7 +513,16 @@ export default {
                 },
                 {
                   alignment: "right",
-                  qr: `${filterOnlineTickets[i].Draw.licence}-${filterOnlineTickets[i].ticketNumber}-${filterOnlineTickets[i].User.email}`,
+                  qr: `${
+                    filterOnlineTickets[filterOnlineTickets.length - 1].Draw
+                      .licence
+                  }-${
+                    filterOnlineTickets[filterOnlineTickets.length - 1]
+                      .ticketNumber
+                  }-${
+                    filterOnlineTickets[filterOnlineTickets.length - 1].User
+                      .email
+                  }`,
                   fit: "58",
                 },
               ],
@@ -172,13 +535,20 @@ export default {
                 {
                   fontSize: 8,
                   text: `Draw Date: ${this.formatDate(
-                    new Date(filterOnlineTickets[i].Draw.drawDate)
+                    new Date(
+                      filterOnlineTickets[
+                        filterOnlineTickets.length - 1
+                      ].Draw.drawDate
+                    )
                   )}`,
                 },
                 {
                   fontSize: 8,
                   alignment: "right",
-                  text: `TICKET NO. ${filterOnlineTickets[i].ticketNumber}`,
+                  text: `TICKET NO. ${
+                    filterOnlineTickets[filterOnlineTickets.length - 1]
+                      .ticketNumber
+                  }`,
                 },
               ],
             },

@@ -20,6 +20,7 @@
     "nuxt": "^2.15.3",
     "pdfmake": "^0.1.71",
     "sweetalert2": "^10.16.2",
+    "vue-qrcode-reader": "^3.0.3",
     "vue-tables-2": "^1.4.70",
     "vue-tailwind": "^2.4.1",
     "vue-tailwind-picker": "^2.0.0"

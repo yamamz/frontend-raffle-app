@@ -626,6 +626,7 @@ export default {
           this.loading = false;
         }
       } catch (err) {
+        this.loading = true;
         this.error = err.response.data.message;
       }
     },
@@ -639,7 +640,8 @@ export default {
         });
         this.$router.push({ path: "/" });
       } catch (err) {
-        console.log(err);
+        this.loading = false;
+        this.error = err.response.data.message;
       }
     },
     async logout() {

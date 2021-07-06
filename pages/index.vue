@@ -1,12 +1,14 @@
 <template>
-  <div class="w-full">
+  <div class="w-full flex flex-col h-screen">
     <nav class="bg-white shadow-lg">
       <div class="md:flex items-center justify-between py-2 px-8 md:px-12">
         <div class="flex justify-between items-center">
-          <div class="text-2xl font-bold text-gray-800 md:text-3xl">
+          <div
+            class="text-2xl font-bold text-gray-800 md:text-3xl hidden md:block"
+          >
             <a href="#">MG fundraising</a>
           </div>
-          <div class="md:hidden">
+          <!-- <div class="md:hidden">
             <button
               type="button"
               class="
@@ -27,9 +29,9 @@
                 />
               </svg>
             </button>
-          </div>
+          </div> -->
         </div>
-        <div class="flex flex-col md:flex-row hidden md:block -mx-2">
+        <div class="flex flex-col md:flex-row md:block -mx-2">
           <button
             v-if="this.$auth.loggedIn"
             @click="gotoUserTickets"
@@ -98,7 +100,7 @@
         </div>
       </div>
     </nav>
-    <div class="flex bg-white" style="height: 600px">
+    <div class="flex bg-white flex-grow">
       <div
         class="
           flex
@@ -202,7 +204,7 @@
         </div>
       </div>
     </div>
-    <div class="p-8 flex flex-col items-center bg-red-100 mt-4">
+    <div class="p-4 flex flex-col items-center bg-red-100 mt-4">
       <p class="font-bold">Terms and Conditions</p>
       <ol>
         <li class="text-xs">

@@ -408,6 +408,7 @@ export default {
         this.loading = false;
         this.$router.push({ path: "/" });
       } catch (err) {
+        this.loading = false;
         this.error = err.response.data.message;
       }
     },

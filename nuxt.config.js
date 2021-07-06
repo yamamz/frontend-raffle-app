@@ -57,7 +57,8 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '~/plugins/v-tailwind-picker',
-    '~/plugins/vue-table'
+    '~/plugins/vue-table',
+    '~/plugins/vue-qr-scanner',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
