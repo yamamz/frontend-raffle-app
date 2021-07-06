@@ -61,8 +61,14 @@ export default {
         );
       } catch (err) {}
     },
-    logErrors(promise) {
-      promise.catch(console.error);
+    async logErrors(promise) {
+      try {
+        await promise;
+      } catch (e) {
+        console.error(e);
+      } finally {
+        this.showScanConfirmation = this.camera === "off";
+      }
     },
     async onDecode(result) {
       this.ticketsCapture.push(result.split(" ")[0]);
