@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
 import { QrcodeStream } from "vue-qrcode-reader";
 export default {
   middleware: "auth-moderator",
@@ -69,7 +70,12 @@ export default {
           "/api/ticket/validate-tickets",
           this.ticketsCapture
         );
-      } catch (err) {}
+        Swal.fire("Success!", "Validate successfully", "success");
+        this.ticketsCapture = [];
+        this.ticketCaptureDisplay = [];
+      } catch (err) {
+        Swal.fire("Opps!", "Validate unsuccessful", "error");
+      }
     },
     async logErrors(promise) {
       try {
