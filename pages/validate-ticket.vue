@@ -2,8 +2,19 @@
   <div class="flex flex items-center justify-center p-4">
     <div class="flex flex-col items-center">
       <p class="text-lg font-bold text-indigo-600 mb-4">Validate Tickets</p>
-      <p>Point your camera to the qr code</p>
-      <div class="w-full bg-blue-100 flex items-center justify-center">
+      <p class="font-bold">Point your camera to the qr code</p>
+      <div
+        class="
+          w-full
+          bg-blue-100
+          flex
+          items-center
+          justify-center
+          p-2
+          rounded
+          shadow-lg
+        "
+      >
         <qrcode-stream
           :key="_uid"
           @decode="onDecode"

@@ -39,14 +39,86 @@
             </p>
           </div>
         </div>
+        <div class="">
+          <label for="" class="text-xs font-semibold px-1 text-gray-500"
+            >Name</label
+          >
+          <input
+            class="
+              w-full
+              pl-10
+              py-2
+              rounded-lg
+              border-2 border-gray-200
+              outline-none
+              focus:border-indigo-500
+            "
+            v-model="form.fullname"
+            placeholder="John Smith"
+          />
+        </div>
+        <div class="">
+          <label for="" class="text-xs font-semibold px-1 text-gray-500"
+            >Address</label
+          >
+          <input
+            class="
+              w-full
+              pl-10
+              py-2
+              rounded-lg
+              border-2 border-gray-200
+              outline-none
+              focus:border-indigo-500
+            "
+            v-model="form.address"
+            placeholder="Enter address"
+          />
+        </div>
+        <div class="">
+          <label for="" class="text-xs font-semibold px-1 text-gray-500"
+            >Email</label
+          >
+          <input
+            class="
+              w-full
+              pl-10
+              py-2
+              rounded-lg
+              border-2 border-gray-200
+              outline-none
+              focus:border-indigo-500
+            "
+            placeholder="johnsmith@example.com"
+            v-model="form.email"
+          />
+        </div>
+        <div class="">
+          <label for="" class="text-xs font-semibold px-1 text-gray-500"
+            >Phone</label
+          >
+          <input
+            class="
+              w-full
+              pl-10
+              py-2
+              rounded-lg
+              border-2 border-gray-200
+              outline-none
+              focus:border-indigo-500
+            "
+            placeholder="mobile no."
+            v-model="form.phone"
+          />
+        </div>
 
-        <div class="py-4">
+        <div class="">
           <label for="" class="text-xs font-semibold px-1 text-gray-500"
             >Amount</label
           >
           <input
             type="number"
-            v-model="amount"
+            v-model="form.amount"
             class="
               w-full
               pl-10
@@ -62,7 +134,7 @@
           <div id="card-element" class="mt-2"></div>
           <button id="submit" @click="payWithCard" class="button">
             <div class="spinner hidden" id="spinner"></div>
-            <span id="button-text">Donate now {{ amount }}$</span>
+            <span id="button-text">Donate now ${{ form.amount }}</span>
           </button>
           <p id="card-error" role="alert"></p>
         </div>
@@ -75,9 +147,8 @@
 import { StripeElementCard } from "@vue-stripe/vue-stripe";
 import key from "~/config/keys";
 var stripe = Stripe(key.stripePublishableKey);
-
+import Swal from "sweetalert2";
 export default {
-  middleware: "auth",
   components: {
     StripeElementCard,
   },
@@ -92,12 +163,19 @@ export default {
       isCheckOut: false,
       successPayment: false,
       loading: false,
-      amount: 5,
+
       draw: {
         description: "",
         ticketPrice: 5,
 
         drawDate: new Date(),
+      },
+      form: {
+        fullname: "",
+        phone: "",
+        email: "",
+        address: "",
+        amount: 5,
       },
     };
   },
@@ -192,79 +270,42 @@ export default {
         this.isLoading(false);
       } else {
         try {
-          await this.$axios.post("/api/payment/donatePayment", {
-            amount: this.amount,
-            token: result.token.id,
-            fullname: `${this.$auth.state.user.firstName} ${this.$auth.state.user.lastName}`,
-            email: this.$auth.state.user.email,
-          });
-          this.loading = false;
-          this.isLoading(false);
-          this.$router.push({ path: "/success-donate" });
+          if (
+            this.form.fullname == "" ||
+            this.form.address == "" ||
+            this.form.phone == "" ||
+            this.form.email == "" ||
+            this.form.amount == ""
+          ) {
+            this.loading = false;
+            this.isLoading(false);
+            Swal.fire("Opps!", "All fields are required", "error");
+          } else {
+            await this.$axios.post("/api/payment/donatePayment", {
+              amount: this.form.amount,
+              token: result.token.id,
+              fullname: this.form.fullname,
+              email: this.form.email,
+              address: this.form.address,
+              phone: this.form.phone,
+            });
+            this.loading = false;
+            this.isLoading(false);
+            this.$router.push({ path: "/success-donate" });
+          }
         } catch (err) {
           Swal.fire("Opps!", "Error occured", "error");
+          this.loading = false;
+          this.isLoading(false);
         }
       }
-    },
-
-    async cancelCheckout() {
-      try {
-        let response = await this.$axios.post("/api/payment/checkoutCancel", {
-          setupIntentId: this.setupIntentId,
-        });
-        this.isCheckOut = false;
-
-        console.log(response);
-      } catch (err) {
-        console.log(err);
-      }
-    },
-    async checkoutCart() {
-      this.isCheckOut = true;
-      this.loading = true;
-      let response = await this.$axios.post("/api/payment/ckeckoutPayment", {
-        ticketPcs: this.amount,
-      });
-      this.loading = false;
-      this.setupIntentId = response.data.setupIntent.id;
-
-      document.querySelector("button").disabled = true;
-
-      var elements = stripe.elements();
-      var style = {
-        base: {
-          color: "#32325d",
-          fontFamily: "Arial, sans-serif",
-          fontSmoothing: "antialiased",
-          fontSize: "16px",
-          "::placeholder": {
-            color: "#32325d",
-          },
-        },
-        invalid: {
-          fontFamily: "Arial, sans-serif",
-          color: "#fa755a",
-          iconColor: "#fa755a",
-        },
-      };
-      var card = elements.create("card", { style: style });
-      // Stripe injects an iframe into the DOM
-      card.mount("#card-element");
-      card.on("change", function (event) {
-        // Disable the Pay button if there are no card details in the Element
-        document.querySelector("button").disabled = event.empty;
-        document.querySelector("#card-error").textContent = event.error
-          ? event.error.message
-          : "";
-      });
-      this.card = card;
-      this.clientSecret = response.data.setupIntent.client_secret;
     },
   },
 };
 </script>
 
 <style scoped>
+@import url("https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.min.css");
 /* Variables */
 * {
   box-sizing: border-box;
