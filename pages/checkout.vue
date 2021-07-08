@@ -280,36 +280,36 @@ export default {
           ...[
             {
               margin: [0, 4, 0, 0],
-              fontSize: 8,
+              fontSize: 9,
               text: "ST. THOMAS AQUINAS PARISH",
               alignment: "center",
             },
             {
-              fontSize: 7,
+              fontSize: 8,
               text: "PO Box 157",
               alignment: "center",
             },
             {
-              fontSize: 7,
+              fontSize: 8,
               text: "St. Lawrence, NL A0E 2V0",
               alignment: "center",
               margin: [0, 0, 0, 6],
             },
             {
-              fontSize: 8,
+              fontSize: 9,
               alignment: "center",
               bold: true,
               text: `${this.draw.description}`.toUpperCase(),
             },
 
             {
-              fontSize: 8,
+              fontSize: 9,
               alignment: "center",
               text: `License Number: ${this.draw.licence}`,
             },
 
             {
-              fontSize: 8,
+              fontSize: 9,
 
               text: `PRIZES:`,
               bold: true,
@@ -317,36 +317,37 @@ export default {
             {
               columns: [
                 {
-                  margin: [0, 8, 0, 0],
-                  fontSize: 8,
+                  margin: [0, 12, 0, 0],
+                  fontSize: 9,
                   text: `1st Prize: $2,000\n2nd Prize: $1,000\n3rd Prize: $500\nConsolation Prizes (3- $200 each)`,
                 },
                 {
                   alignment: "right",
                   qr: `${tickets[i].id} ${tickets[i].ticketNumber} ${this.draw.licence} ${this.$auth.state.user.email}`,
-                  fit: "58",
+                  fit: "100",
                 },
               ],
             },
 
             {
-              margin: [0, 10, 0, 0],
+              margin: [0, 6, 0, 0],
 
               columns: [
                 {
-                  fontSize: 8,
+                  fontSize: 9,
                   text: `Draw Date: ${this.formatDate(
                     new Date(this.draw.drawDate)
                   )}`,
                 },
                 {
-                  fontSize: 8,
+                  fontSize: 9,
                   alignment: "right",
                   text: `TICKET NO. ${tickets[i].ticketNumber}`,
                 },
               ],
             },
             {
+              margin: [0, 6, 0, 0],
               fontSize: 8,
               text: "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
             },

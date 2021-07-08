@@ -426,8 +426,6 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.min.css");
-
 .loader {
   border-top-color: #3498db;
   -webkit-animation: spinner 1.5s linear infinite;

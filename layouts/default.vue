@@ -1,5 +1,167 @@
 <template>
   <div>
+    <nav class="bg-gray-50" v-show="this.$store.state.auth.loggedIn">
+      <div class="md:flex items-center justify-between py-2 px-8 md:px-12">
+        <div class="flex justify-between items-center">
+          <div
+            class="text-lg font-bold text-red-400 md:text-2xl hidden md:block"
+          >
+            <a href="#">MG fundraising</a>
+          </div>
+          <!-- <div class="md:hidden">
+            <button
+              type="button"
+              class="
+                block
+                text-gray-800
+                hover:text-gray-700
+                focus:text-gray-700
+                focus:outline-none
+              "
+            >
+              <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
+                <path
+                  class="hidden"
+                  d="M16.24 14.83a1 1 0 0 1-1.41 1.41L12 13.41l-2.83 2.83a1 1 0 0 1-1.41-1.41L10.59 12 7.76 9.17a1 1 0 0 1 1.41-1.41L12 10.59l2.83-2.83a1 1 0 0 1 1.41 1.41L13.41 12l2.83 2.83z"
+                />
+                <path
+                  d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z"
+                />
+              </svg>
+            </button>
+          </div> -->
+        </div>
+        <!-- <dropDown
+          animation="scale"
+          class="md:hidden justify-end flex"
+          color="red"
+          :items="['admin', 'user', 'test']"
+        ></dropDown> -->
+        <div class="flex flex-row md:flex-row justify-center md:block -mx-2">
+          <button
+            @click="gotoHome"
+            class="
+              text-gray-900
+              rounded
+              hover:bg-red-400
+              hover:text-gray-100
+              hover:font-medium
+              py-2
+              px-2
+              md:mx-2
+              font-bold
+              tracking-wider
+              text-xs
+              md:text-sm
+            "
+          >
+            home
+          </button>
+          <button
+            v-if="this.$store.state.auth.loggedIn"
+            @click="gotoUserTickets"
+            class="
+              text-gray-900
+              rounded
+              hover:bg-red-400
+              hover:text-gray-100
+              hover:font-medium
+              py-2
+              px-2
+              md:mx-2
+              font-bold
+              tracking-wider
+              text-xs
+              md:text-sm
+            "
+          >
+            My tickets
+          </button>
+          <button
+            v-if="isModerator"
+            @click="gotoDraw"
+            class="
+              text-gray-900
+              rounded
+              hover:bg-red-400
+              hover:text-gray-100
+              hover:font-medium
+              py-2
+              px-2
+              md:mx-2
+              font-bold
+              tracking-wider
+              text-xs
+              md:text-sm
+            "
+          >
+            Draw
+          </button>
+
+          <button
+            v-if="isModerator"
+            @click="gotoValidate"
+            class="
+              text-gray-900
+              rounded
+              hover:bg-red-400
+              hover:text-gray-100
+              hover:font-medium
+              py-2
+              px-2
+              md:mx-2
+              font-bold
+              tracking-wider
+              text-xs
+              md:text-sm
+            "
+          >
+            Validate
+          </button>
+
+          <button
+            v-if="this.$store.state.auth.loggedIn"
+            class="
+              text-gray-900
+              rounded
+              hover:bg-red-400
+              hover:text-gray-100
+              hover:font-medium
+              py-2
+              px-2
+              md:mx-2
+              font-bold
+              tracking-wider
+              text-xs
+              md:text-sm
+            "
+            @click="logout"
+          >
+            Logout
+          </button>
+          <button
+            v-if="!this.$store.state.auth.loggedIn"
+            class="
+              text-gray-900
+              rounded
+              hover:bg-red-400
+              hover:text-gray-100
+              hover:font-medium
+              py-2
+              px-2
+              md:mx-2
+              font-bold
+              tracking-wider
+              text-xs
+              md:text-sm
+            "
+            @click="login"
+          >
+            Login
+          </button>
+        </div>
+      </div>
+    </nav>
     <Nuxt />
   </div>
 </template>
@@ -84,25 +246,57 @@ html {
 }
 </style>
 <script>
+import dropDown from "./../components/Drop-down.vue";
 export default {
+  components: {
+    dropDown,
+  },
   data() {
     return {
-      isLogin: this.$auth.$state.loggedIn,
+      isLogin: this.$store.state.auth.loggedIn,
     };
   },
+  computed: {
+    isModerator() {
+      let user = this.$store.state.auth.user;
+      console.log(user);
+      if (user) {
+        let filterRolesByModerator = user.Roles.filter(
+          (el) => el.name == "moderator"
+        );
+        if (filterRolesByModerator.length > 0) {
+          return true;
+        }
+      }
+      return false;
+    },
+  },
   methods: {
+    gotoHome() {
+      this.$router.push({ path: "/" });
+    },
+    gotoValidate() {
+      this.$router.push({ path: "/validate-ticket" });
+    },
+    gotoUserTickets() {
+      this.$router.push({ path: "/users/tickets" });
+    },
+    gotoDraw() {
+      this.$router.push({ path: "/draws" });
+    },
     async logout() {
       try {
         let response = await this.$auth.logout();
-        console.log(response);
-        console.log(this.$auth.user);
-        this.isLogin = this.$auth.$state.loggedIn;
-        console.log(this.isLogin);
+
         this.$router.push({ path: "/login" });
       } catch (err) {
         console.log(err);
       }
     },
+    login() {
+      this.$router.push({ path: "/login" });
+    },
   },
+  created() {},
 };
 </script>

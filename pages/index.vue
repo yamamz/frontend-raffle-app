@@ -1,137 +1,5 @@
 <template>
   <div class="w-full flex flex-col h-screen">
-    <nav class="bg-white shadow-lg">
-      <div class="md:flex items-center justify-between py-2 px-8 md:px-12">
-        <div class="flex justify-between items-center">
-          <div
-            class="text-2xl font-bold text-gray-800 md:text-3xl hidden md:block"
-          >
-            <a href="#">MG fundraising</a>
-          </div>
-          <!-- <div class="md:hidden">
-            <button
-              type="button"
-              class="
-                block
-                text-gray-800
-                hover:text-gray-700
-                focus:text-gray-700
-                focus:outline-none
-              "
-            >
-              <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
-                <path
-                  class="hidden"
-                  d="M16.24 14.83a1 1 0 0 1-1.41 1.41L12 13.41l-2.83 2.83a1 1 0 0 1-1.41-1.41L10.59 12 7.76 9.17a1 1 0 0 1 1.41-1.41L12 10.59l2.83-2.83a1 1 0 0 1 1.41 1.41L13.41 12l2.83 2.83z"
-                />
-                <path
-                  d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z"
-                />
-              </svg>
-            </button>
-          </div> -->
-        </div>
-        <div class="flex flex-col md:flex-row md:block -mx-2">
-          <button
-            v-if="this.$auth.loggedIn"
-            @click="gotoUserTickets"
-            class="
-              text-gray-900
-              rounded
-              hover:bg-red-400
-              hover:text-gray-100
-              hover:font-medium
-              py-2
-              px-2
-              md:mx-2
-              font-bold
-              tracking-wider
-              text-sm
-            "
-          >
-            My tickets
-          </button>
-          <button
-            v-if="isModerator"
-            @click="gotoDraw"
-            class="
-              text-gray-900
-              rounded
-              hover:bg-red-400
-              hover:text-gray-100
-              hover:font-medium
-              py-2
-              px-2
-              md:mx-2
-              font-bold
-              tracking-wider
-              text-sm
-            "
-          >
-            Draw
-          </button>
-
-          <button
-            v-if="isModerator"
-            @click="gotoValidate"
-            class="
-              text-gray-900
-              rounded
-              hover:bg-red-400
-              hover:text-gray-100
-              hover:font-medium
-              py-2
-              px-2
-              md:mx-2
-              font-bold
-              tracking-wider
-              text-sm
-            "
-          >
-            Validate
-          </button>
-
-          <button
-            v-if="this.$auth.loggedIn"
-            class="
-              text-gray-900
-              rounded
-              hover:bg-red-400
-              hover:text-gray-100
-              hover:font-medium
-              py-2
-              px-2
-              md:mx-2
-              font-bold
-              tracking-wider
-              text-sm
-            "
-            @click="logout"
-          >
-            Logout
-          </button>
-          <button
-            v-if="!this.$auth.loggedIn"
-            class="
-              text-gray-900
-              rounded
-              hover:bg-red-400
-              hover:text-gray-100
-              hover:font-medium
-              py-2
-              px-2
-              md:mx-2
-              font-bold
-              tracking-wider
-              text-sm
-            "
-            @click="login"
-          >
-            Login
-          </button>
-        </div>
-      </div>
-    </nav>
     <div class="flex bg-white flex-grow">
       <div
         class="
@@ -145,7 +13,7 @@
         "
       >
         <div>
-          <h2 class="text-3xl font-semibold text-gray-800 md:text-6xl mb-8">
+          <h2 class="text-3xl font-semibold text-gray-800 md:text-4xl mb-8">
             50/50 Draw <span class="text-indigo-600">Fundraising</span>
           </h2>
           <p class="mt-2 text-base text-gray-500 md:text-lg mb-4">
@@ -230,7 +98,7 @@
       >
         <div
           class="h-full w-full object-cover"
-          style="background: url('/banner.jpg')"
+          style="background: url('/50-50.png')"
         >
           <!-- <div class="h-full bg-black opacity-25"></div> -->
         </div>
@@ -274,8 +142,12 @@
 
 <script>
 import Swal from "sweetalert2";
+import dropDown from "./../components/Drop-down.vue";
 export default {
   auth: "guest",
+  components: {
+    dropDown,
+  },
   data() {
     return {
       isModerator: false,
@@ -289,6 +161,22 @@ export default {
     },
     gotoUserTickets() {
       this.$router.push({ path: "/users/tickets" });
+    },
+    gotoDraw() {
+      this.$router.push({ path: "/draws" });
+    },
+    async logout() {
+      try {
+        let response = await this.$auth.logout();
+        console.log(response);
+        console.log(this.$auth.user);
+        this.$router.push({ path: "/login" });
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    login() {
+      this.$router.push({ path: "/login" });
     },
     async gotoCheckOut() {
       if (this.agree) {
@@ -313,22 +201,6 @@ export default {
     },
     gotoDonate() {
       this.$router.push({ path: "/donate" });
-    },
-    gotoDraw() {
-      this.$router.push({ path: "/draws" });
-    },
-    async logout() {
-      try {
-        let response = await this.$auth.logout();
-        console.log(response);
-        console.log(this.$auth.user);
-        this.$router.push({ path: "/login" });
-      } catch (err) {
-        console.log(err);
-      }
-    },
-    login() {
-      this.$router.push({ path: "/login" });
     },
   },
   async created() {

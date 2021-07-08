@@ -1,21 +1,10 @@
 <template>
-  <div class="flex flex-col justify-center items-center pt-8">
-    <div class="text-2xl font-bold md:text-3xl text-indigo-600">
-      Draw Management
-    </div>
+  <div class="w-full flex flex-col h-screen items-center pt-8">
     <div class="-my-2 lg:-mx-8 lg:w-1/2">
       <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
         <div
           class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
         >
-          <div class="flex justify-end p-4 w-full shadow rounded-lg">
-            <button
-              class="bg-indigo-600 px-4 py-2 text-white rounded shadow"
-              @click="modalHandler"
-            >
-              Add Entry
-            </button>
-          </div>
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
@@ -87,7 +76,18 @@
                     tracking-wider
                   "
                 >
-                  Action
+                  <div class="flex items-center justify-end">
+                    <span> Action</span>
+                    <i
+                      @click="modalHandler"
+                      class="
+                        mdi mdi-note-plus
+                        text-indigo-400 text-4xl
+                        ml-8
+                        cursor-pointer
+                      "
+                    ></i>
+                  </div>
                 </th>
               </tr>
             </thead>
@@ -496,3 +496,6 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+</style>

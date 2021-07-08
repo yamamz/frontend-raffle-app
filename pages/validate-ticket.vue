@@ -1,7 +1,6 @@
 <template>
   <div class="flex flex items-center justify-center p-4">
     <div class="flex flex-col items-center">
-      <p class="text-lg font-bold text-indigo-600 mb-4">Validate Tickets</p>
       <p class="font-bold">Point your camera to the qr code</p>
       <div
         class="
@@ -124,7 +123,6 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.min.css");
 .scan-confirmation {
   position: absolute;
   width: 100%;

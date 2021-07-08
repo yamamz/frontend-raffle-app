@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center pt-20">
+  <div class="w-full flex flex-col h-screen items-center pt-10">
     <div
       class="
         text-2xl
@@ -8,29 +8,39 @@
         text-indigo-500
         flex
         justify-between
-        w-2/3
+        xl:w-2/3
         px-8
       "
     >
-      <div class="flex">
-        <router-link to="/">
-          <button class="rounded bg-indigo-500 text-white text-base px-8 py-2">
-            Home
+      <div class="flex flex-col md:flex-row gap-2 mb-4">
+        <router-link to="#">
+          <button
+            @click="printOnlineSoldTickets"
+            class="rounded bg-red-500 text-white text-base px-8 py-2 ml-2"
+          >
+            Print Online Tickets
           </button>
         </router-link>
         <router-link to="#">
           <button
-            @click="printOnlineSoldTickets"
+            @click="printTicketsWithDuplicate"
             class="rounded bg-indigo-500 text-white text-base px-8 py-2 ml-2"
           >
-            Print Online Sold Tickets
+            Print offline Tickets
+          </button>
+        </router-link>
+        <router-link to="#">
+          <button
+            @click="showModal = true"
+            class="rounded bg-red-500 text-white text-base px-8 py-2 ml-2"
+          >
+            Add offline tickets
           </button>
         </router-link>
       </div>
-      <div><p>Draw's ticket entries</p></div>
     </div>
     <div
-      class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 -my-2 lg:-mx-8 lg:w-2/3"
+      class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-2 -my-2 lg:-mx-2 xl:w-2/3"
     >
       <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
         <div
@@ -42,18 +52,6 @@
             :data="tickets"
             class="p-4"
           >
-            <span slot="Fullname" slot-scope="props">
-              {{ props.row.User.firstName }} {{ props.row.User.lastName }}
-            </span>
-            <span slot="Email" slot-scope="props">
-              {{ props.row.User.email }}
-            </span>
-            <span slot="Phone" slot-scope="props">
-              {{ props.row.User.contact }}
-            </span>
-            <span slot="Address" slot-scope="props">
-              {{ props.row.User.address }}
-            </span>
             <span slot="draw date" slot-scope="props">
               {{ formatDate(new Date(props.row.Draw.drawDate)) }}
             </span>
@@ -71,11 +69,139 @@
               </span>
             </div>
           </v-client-table>
-
-          <div class="py-4 px-2"></div>
         </div>
       </div>
     </div>
+
+    <transition
+      name="custom"
+      enter-active-class="animate__animated animate__bounceIn"
+      leave-active-class="animate__animated animate__bounceOut"
+    >
+      <!-- Modal -->
+      <div
+        v-if="showModal"
+        class="
+          w-11/12
+          items-center
+          lg:w-full
+          max-w-xl
+          z-20
+          mx-auto
+          bg-white
+          flex flex-col
+          self-center
+          shadow-2xl
+          rounded-md
+          dark:bg-black
+          bg-gray-800 bg-opacity-25
+          z-10
+          absolute
+          top-72
+          right-0
+          bottom-0
+          left-0
+          h-96
+          justify-center
+        "
+      >
+        <!-- Modal header -->
+        <div class="px-6 border-gray-200 text-lg font-bold text-indigo-400">
+          Generate offline ticket
+        </div>
+        <!-- ./Modal header -->
+
+        <!-- Modal body -->
+        <div class="p-6">
+          <div class="">
+            <label for="" class="text-xs font-semibold px-1 text-gray-500"
+              >Number of tickets</label
+            >
+            <input
+              type="number"
+              v-model="ticketPcs"
+              class="
+                w-full
+                px-2
+                py-2
+                rounded-lg
+                border-2 border-gray-200
+                outline-none
+                focus:border-indigo-500
+              "
+            />
+          </div>
+        </div>
+        <!-- ./Modal body -->
+
+        <!-- Modal footer -->
+        <div class="border-gray-200 p-6 flex justify-end gap-2">
+          <button
+            @click="showModal = false"
+            class="
+              bg-red-400
+              hover:bg-red-500
+              focus:outline-none
+              transition
+              px-4
+              py-2
+              rounded-md
+              text-white
+              transition
+              duration-500
+              ease-in-out
+            "
+          >
+            Cancel
+          </button>
+          <button
+            @click="generateOfflineTickets"
+            class="
+              bg-green-400
+              hover:bg-green-500
+              focus:outline-none
+              transition
+              px-4
+              py-2
+              rounded-md
+              text-white
+              transition
+              duration-500
+              ease-in-out
+            "
+          >
+            Add
+          </button>
+        </div>
+        <!-- ./Modal footer -->
+      </div>
+      <!-- ./Modal -->
+    </transition>
+
+    <transition
+      name="custom"
+      enter-active-class="animate__animated animate__fadeIn"
+      leave-active-class="animate__animated animate__fadeOut"
+    >
+      <!-- Overlay -->
+      <div
+        v-if="showModal"
+        class="
+          bg-gray-700 bg-opacity-50
+          fixed
+          bottom-0
+          left-0
+          w-full
+          h-full
+          transition
+          duration-500
+          ease-in-out
+          transfom
+          z-10
+        "
+      ></div>
+      <!-- ./Overlay -->
+    </transition>
   </div>
 </template>
 
@@ -89,18 +215,42 @@ export default {
   data() {
     return {
       tickets: [],
+      showModal: false,
+      ticketPcs: 0,
       columns: [
         "ticketNumber",
-        "Fullname",
-        "Email",
-        "Phone",
-        "Address",
+        "fullname",
+        "email",
+        "phone",
+        "address",
         "draw date",
         "free",
       ],
     };
   },
   methods: {
+    async generateOfflineTickets() {
+      try {
+        if (this.ticketPcs > 0) {
+          let response = await this.$axios.post(
+            "/api/ticket/generateOffTicket",
+            {
+              userId: this.$auth.state.user.id,
+              drawId: this.$route.params.id,
+              ticketPcs: this.ticketPcs,
+            }
+          );
+          this.showModal = false;
+          response.data.tickets.forEach((element) => {
+            element.phone = element.User.contact;
+            element.email = element.User.email;
+            element.fullname = `${element.User.firstName} ${element.User.lastName}`;
+            element.address = element.User.address;
+          });
+          this.tickets = response.data.tickets;
+        }
+      } catch (err) {}
+    },
     formatDate(d) {
       let ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
       let mo = new Intl.DateTimeFormat("en", { month: "short" }).format(d);
@@ -118,46 +268,72 @@ export default {
             {
               columns: [
                 {
-                  qr: `${filterOnlineTickets[i].id} ${filterOnlineTickets[i].Draw.licence} ${filterOnlineTickets[i].ticketNumber} ${filterOnlineTickets[i].User.email}`,
-                  fit: "58",
+                  width: 110,
+                  alignment: "left",
+                  margin: [0, 0, 0, 0],
+                  type: "none",
+                  ol: [
+                    {
+                      qr: `${filterOnlineTickets[i].id} ${filterOnlineTickets[i].ticketNumber} ${filterOnlineTickets[i].Draw.licence} ${filterOnlineTickets[i].User.email}`,
+                      fit: "110",
+                    },
+                    {
+                      margin: [0, 8, 0, 0],
+                      fontSize: 7,
+
+                      text: `No. ${filterOnlineTickets[i].ticketNumber}`,
+                      bold: true,
+                    },
+                  ],
                 },
+
                 {
                   alignment: "left",
-                  width: 200,
-                  margin: [0, 0, 40, 0],
+                  width: 150,
+                  margin: [0, 0, 0, 0],
                   type: "none",
                   ol: [
                     {
                       type: "none",
                       ol: [
                         {
-                          margin: [0, 4, 0, 0],
+                          margin: [0, 0, 0, 0],
                           fontSize: 8,
                           text: "ST. THOMAS AQUINAS PARISH",
-                          alignment: "center",
                         },
                         {
                           fontSize: 7,
                           text: "PO Box 157",
-                          alignment: "center",
                         },
                         {
                           fontSize: 7,
                           text: "St. Lawrence, NL A0E 2V0",
-                          alignment: "center",
+
                           margin: [0, 0, 0, 6],
                         },
                         {
                           fontSize: 8,
-                          alignment: "center",
+
                           bold: true,
                           text: `${filterOnlineTickets[i].Draw.description}`.toUpperCase(),
                         },
 
                         {
                           fontSize: 8,
-                          alignment: "center",
-                          text: `License Number: ${filterOnlineTickets[i].Draw.licence}`,
+
+                          text: `License No: ${filterOnlineTickets[i].Draw.licence}`,
+                        },
+                        {
+                          margin: [0, 8, 0, 0],
+                          fontSize: 8,
+                          text: `1st Prize: $2,000\n2nd Prize: $1,000\n3rd Prize: $500\nConsolation Prizes (3- $200 each)`,
+                        },
+                        {
+                          margin: [0, 8, 0, 0],
+                          fontSize: 8,
+                          text: `Draw Date: ${this.formatDate(
+                            new Date(filterOnlineTickets[i].Draw.drawDate)
+                          )}`,
                         },
                       ],
                     },
@@ -165,46 +341,76 @@ export default {
                 },
 
                 {
-                  qr: `${filterOnlineTickets[i].id} ${filterOnlineTickets[i].Draw.licence} ${filterOnlineTickets[i].ticketNumber} ${filterOnlineTickets[i].User.email}`,
-                  fit: "58",
-                },
-                {
                   alignment: "left",
-                  width: 200,
-                  margin: [0, 0, 40, 0],
+
                   type: "none",
                   ol: [
                     {
                       type: "none",
                       ol: [
                         {
-                          margin: [0, 4, 0, 0],
+                          qr: `${filterOnlineTickets[i].id} ${filterOnlineTickets[i].ticketNumber} ${filterOnlineTickets[i].Draw.licence} ${filterOnlineTickets[i].User.email}`,
+                          fit: "110",
+                        },
+                        {
+                          margin: [0, 8, 0, 0],
+                          fontSize: 7,
+
+                          text: `No. ${filterOnlineTickets[i].ticketNumber}`,
+                          bold: true,
+                        },
+                      ],
+                    },
+                  ],
+                },
+
+                {
+                  alignment: "left",
+                  width: 200,
+
+                  type: "none",
+                  ol: [
+                    {
+                      type: "none",
+                      ol: [
+                        {
+                          margin: [0, 0, 0, 0],
                           fontSize: 8,
                           text: "ST. THOMAS AQUINAS PARISH",
-                          alignment: "center",
                         },
                         {
                           fontSize: 7,
                           text: "PO Box 157",
-                          alignment: "center",
                         },
                         {
                           fontSize: 7,
                           text: "St. Lawrence, NL A0E 2V0",
-                          alignment: "center",
+
                           margin: [0, 0, 0, 6],
                         },
                         {
                           fontSize: 8,
-                          alignment: "center",
+
                           bold: true,
                           text: `${filterOnlineTickets[i].Draw.description}`.toUpperCase(),
                         },
 
                         {
                           fontSize: 8,
-                          alignment: "center",
-                          text: `License Number: ${filterOnlineTickets[i].Draw.licence}`,
+
+                          text: `License No: ${filterOnlineTickets[i].Draw.licence}`,
+                        },
+                        {
+                          margin: [0, 8, 0, 0],
+                          fontSize: 8,
+                          text: `fullname: _____________________________\naddress: ______________________________\nphone: _______________________________\nemail: ________________________________`,
+                        },
+                        {
+                          margin: [0, 8, 0, 0],
+                          fontSize: 8,
+                          text: `Draw Date: ${this.formatDate(
+                            new Date(filterOnlineTickets[i].Draw.drawDate)
+                          )}`,
                         },
                       ],
                     },
@@ -212,59 +418,9 @@ export default {
                 },
               ],
             },
-            {
-              columns: [
-                {
-                  fontSize: 8,
-
-                  text: `No. ${filterOnlineTickets[i].ticketNumber}\nPRIZES:`,
-                  bold: true,
-                },
-                {
-                  fontSize: 8,
-
-                  text: `No. ${filterOnlineTickets[i].ticketNumber}\nPRIZES:`,
-                  bold: true,
-                },
-              ],
-            },
 
             {
-              columns: [
-                {
-                  margin: [0, 8, 0, 0],
-                  fontSize: 8,
-                  text: `1st Prize: $2,000\n2nd Prize: $1,000\n3rd Prize: $500\nConsolation Prizes (3- $200 each)`,
-                },
-                {
-                  alignment: "left",
-                  margin: [0, 8, 0, 0],
-                  fontSize: 8,
-                  text: `Name:     __________________________________________________\nAddress:  __________________________________________________\nContact No. ______________________________________________`,
-                },
-              ],
-            },
-
-            {
-              margin: [0, 10, 0, 0],
-
-              columns: [
-                {
-                  fontSize: 8,
-                  text: `Draw Date: ${this.formatDate(
-                    new Date(filterOnlineTickets[i].Draw.drawDate)
-                  )}`,
-                },
-
-                {
-                  fontSize: 8,
-                  text: `Draw Date: ${this.formatDate(
-                    new Date(filterOnlineTickets[i].Draw.drawDate)
-                  )}`,
-                },
-              ],
-            },
-            {
+              margin: [0, 0, 0, 4],
               fontSize: 8,
               text: "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
             },
@@ -298,6 +454,7 @@ export default {
               {
                 columns: [
                   {
+                    width: 110,
                     alignment: "left",
                     margin: [0, 0, 0, 0],
                     type: "none",
@@ -446,7 +603,7 @@ export default {
                             margin: [0, 8, 0, 0],
                             fontSize: 8,
                             text: `Draw Date: ${this.formatDate(
-                              new Date(filterOnlineTickets[i - 1].Draw.drawDate)
+                              new Date(filterOnlineTickets[i].Draw.drawDate)
                             )}`,
                           },
                         ],
@@ -469,97 +626,108 @@ export default {
         ticketsContents.push(
           ...[
             {
-              margin: [0, 4, 0, 0],
-              fontSize: 8,
-              text: "ST. THOMAS AQUINAS PARISH",
-              alignment: "center",
-            },
-            {
-              fontSize: 7,
-              text: "PO Box 157",
-              alignment: "center",
-            },
-            {
-              fontSize: 7,
-              text: "St. Lawrence, NL A0E 2V0",
-              alignment: "center",
-              margin: [0, 0, 0, 6],
-            },
-            {
-              fontSize: 8,
-              alignment: "center",
-              bold: true,
-              text: `${
-                filterOnlineTickets[filterOnlineTickets.length - 1].Draw
-                  .description
-              }`.toUpperCase(),
-            },
-
-            {
-              fontSize: 8,
-              alignment: "center",
-              text: `License Number: ${
-                filterOnlineTickets[filterOnlineTickets.length - 1].Draw.licence
-              }`,
-            },
-
-            {
-              fontSize: 8,
-
-              text: `PRIZES:`,
-              bold: true,
-            },
-            {
               columns: [
                 {
-                  margin: [0, 8, 0, 0],
-                  fontSize: 8,
-                  text: `1st Prize: $2,000\n2nd Prize: $1,000\n3rd Prize: $500\nConsolation Prizes (3- $200 each)`,
+                  width: 110,
+                  alignment: "left",
+                  margin: [0, 0, 0, 0],
+                  type: "none",
+                  ol: [
+                    {
+                      qr: `${
+                        filterOnlineTickets[filterOnlineTickets.length - 1].id
+                      } ${
+                        filterOnlineTickets[filterOnlineTickets.length - 1]
+                          .ticketNumber
+                      } ${
+                        filterOnlineTickets[filterOnlineTickets.length - 1].Draw
+                          .licence
+                      } ${
+                        filterOnlineTickets[filterOnlineTickets.length - 1].User
+                          .email
+                      }`,
+                      fit: "110",
+                    },
+                    {
+                      margin: [0, 8, 0, 0],
+                      fontSize: 7,
+
+                      text: `No. ${
+                        filterOnlineTickets[filterOnlineTickets.length - 1]
+                          .ticketNumber
+                      }`,
+                      bold: true,
+                    },
+                  ],
                 },
+
                 {
-                  alignment: "right",
-                  qr: `${
-                    filterOnlineTickets[filterOnlineTickets.length - 1].id
-                  } ${
-                    filterOnlineTickets[filterOnlineTickets.length - 1].Draw
-                      .licence
-                  } ${
-                    filterOnlineTickets[filterOnlineTickets.length - 1]
-                      .ticketNumber
-                  } ${
-                    filterOnlineTickets[filterOnlineTickets.length - 1].User
-                      .email
-                  }`,
-                  fit: "58",
+                  alignment: "left",
+                  width: 160,
+                  margin: [0, 0, 0, 0],
+                  type: "none",
+                  ol: [
+                    {
+                      type: "none",
+                      ol: [
+                        {
+                          margin: [0, 0, 0, 0],
+                          fontSize: 8,
+                          text: "ST. THOMAS AQUINAS PARISH",
+                        },
+                        {
+                          fontSize: 7,
+                          text: "PO Box 157",
+                        },
+                        {
+                          fontSize: 7,
+                          text: "St. Lawrence, NL A0E 2V0",
+
+                          margin: [0, 0, 0, 6],
+                        },
+                        {
+                          fontSize: 8,
+
+                          bold: true,
+                          text: `${
+                            filterOnlineTickets[filterOnlineTickets.length - 1]
+                              .Draw.description
+                          }`.toUpperCase(),
+                        },
+
+                        {
+                          fontSize: 8,
+
+                          text: `License No: ${
+                            filterOnlineTickets[filterOnlineTickets.length - 1]
+                              .Draw.licence
+                          }`,
+                        },
+                        {
+                          margin: [0, 8, 0, 0],
+                          fontSize: 8,
+                          text: `1st Prize: $2,000\n2nd Prize: $1,000\n3rd Prize: $500\nConsolation Prizes (3- $200 each)`,
+                        },
+                        {
+                          margin: [0, 8, 0, 0],
+                          fontSize: 8,
+                          text: `Draw Date: ${this.formatDate(
+                            new Date(
+                              filterOnlineTickets[
+                                filterOnlineTickets.length - 1
+                              ].Draw.drawDate
+                            )
+                          )}`,
+                        },
+                      ],
+                    },
+                  ],
                 },
               ],
             },
 
             {
-              margin: [0, 10, 0, 0],
-
-              columns: [
-                {
-                  fontSize: 8,
-                  text: `Draw Date: ${this.formatDate(
-                    new Date(
-                      filterOnlineTickets[
-                        filterOnlineTickets.length - 1
-                      ].Draw.drawDate
-                    )
-                  )}`,
-                },
-                {
-                  fontSize: 8,
-                  alignment: "right",
-                  text: `TICKET NO. ${
-                    filterOnlineTickets[filterOnlineTickets.length - 1]
-                      .ticketNumber
-                  }`,
-                },
-              ],
-            },
-            {
+              margin: [0, 0, 0, 4],
               fontSize: 8,
               text: "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
             },
@@ -568,15 +736,7 @@ export default {
       }
 
       var docDefinition = {
-        content: [
-          ticketsContents,
-          // basic usage
-          // { qr: "text in QR" },
-          // // colored QR
-          // { qr: "text in QR", foreground: "red", background: "yellow" },
-          // // resized QR
-          // { qr: "text in QR", fit: "500" },
-        ],
+        content: [ticketsContents],
       };
       let pdfDocGenerator = await pdfMake.createPdf(docDefinition);
       pdfDocGenerator.print();
@@ -586,6 +746,12 @@ export default {
     let response = await this.$axios.get(
       "/api/ticket/getAllByDraw/" + this.$route.params.id
     );
+    response.data.tickets.forEach((element) => {
+      element.phone = element.User.contact;
+      element.email = element.User.email;
+      element.fullname = `${element.User.firstName} ${element.User.lastName}`;
+      element.address = element.User.address;
+    });
     this.tickets = response.data.tickets;
   },
 };

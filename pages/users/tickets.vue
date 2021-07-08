@@ -1,27 +1,6 @@
 <template>
   <div class="flex flex-col items-center pt-20">
     <div
-      class="
-        text-2xl
-        font-bold
-        md:text-3xl
-        text-indigo-600
-        flex
-        justify-between
-        w-1/2
-        px-8
-      "
-    >
-      <div>
-        <router-link to="/">
-          <button class="rounded bg-indigo-600 text-white text-base px-4 py-2">
-            Home
-          </button>
-        </router-link>
-      </div>
-      <div><p>User's ticket entries</p></div>
-    </div>
-    <div
       class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 -my-2 lg:-mx-8 lg:w-1/2"
     >
       <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -85,5 +64,4 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css");
 </style>
