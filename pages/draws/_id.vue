@@ -13,30 +13,32 @@
       "
     >
       <div class="flex flex-col md:flex-row gap-2 mb-4">
-        <router-link to="#">
-          <button
-            @click="printOnlineSoldTickets"
-            class="rounded bg-red-500 text-white text-base px-8 py-2 ml-2"
-          >
-            Print Online Tickets
-          </button>
-        </router-link>
-        <router-link to="#">
-          <button
-            @click="printTicketsWithDuplicate"
-            class="rounded bg-indigo-500 text-white text-base px-8 py-2 ml-2"
-          >
-            Print offline Tickets
-          </button>
-        </router-link>
-        <router-link to="#">
-          <button
-            @click="showModal = true"
-            class="rounded bg-red-500 text-white text-base px-8 py-2 ml-2"
-          >
-            Add offline tickets
-          </button>
-        </router-link>
+        <button
+          @click="printOnlineSoldTickets(false)"
+          class="rounded bg-red-500 text-white text-base px-8 py-2 ml-2"
+        >
+          Print Online Tickets
+        </button>
+        <button
+          @click="printOnlineSoldTickets(true)"
+          class="rounded bg-green-500 text-white text-base px-8 py-2 ml-2"
+        >
+          Print free Tickets
+        </button>
+
+        <button
+          @click="printTicketsWithDuplicate"
+          class="rounded bg-indigo-500 text-white text-base px-8 py-2 ml-2"
+        >
+          Print offline Tickets
+        </button>
+
+        <button
+          @click="showModal = true"
+          class="rounded bg-red-500 text-white text-base px-8 py-2 ml-2"
+        >
+          Add offline tickets
+        </button>
       </div>
     </div>
     <div
@@ -46,6 +48,18 @@
         <div
           class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
         >
+          <div class="flex flex-col p-4">
+            <p class="tracking-wider">
+              Online Sold tickets:
+              {{ tickets.filter((el) => el.isSaleOnline && !el.isFree).length }}
+            </p>
+            <p class="tracking-wider">
+              Offline Sold tickets:
+              {{
+                tickets.filter((el) => !el.isSaleOnline && el.soldOut).length
+              }}
+            </p>
+          </div>
           <v-client-table
             filterable="true"
             :columns="columns"
@@ -442,11 +456,19 @@ export default {
       let pdfDocGenerator = await pdfMake.createPdf(docDefinition);
       pdfDocGenerator.print();
     },
-    async printOnlineSoldTickets() {
+    async printOnlineSoldTickets(isFree) {
       let ticketsContents = [];
-      let filterOnlineTickets = this.tickets.filter(
-        (el) => el.isSaleOnline == true
-      );
+      let filterOnlineTickets = [];
+      if (!isFree) {
+        filterOnlineTickets = this.tickets.filter(
+          (el) => el.isSaleOnline == true && !el.isFree
+        );
+      } else {
+        filterOnlineTickets = this.tickets.filter(
+          (el) => el.isSaleOnline == true && el.isFree
+        );
+      }
+
       for (let i = 1; i < filterOnlineTickets.length; i = i + 2) {
         try {
           ticketsContents.push(

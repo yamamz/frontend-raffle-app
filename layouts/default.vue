@@ -1,12 +1,12 @@
 <template>
   <div>
-    <nav class="bg-gray-50" v-show="this.$store.state.auth.loggedIn">
+    <nav class="bg-gray-50">
       <div class="md:flex items-center justify-between py-2 px-8 md:px-12">
         <div class="flex justify-between items-center">
           <div
-            class="text-lg font-bold text-red-400 md:text-2xl hidden md:block"
+            class="text-lg font-bold text-red-400 md:text-2xl hidden lg:block"
           >
-            <a href="#">MG fundraising</a>
+            <p>Meditation Garden fundraising</p>
           </div>
           <!-- <div class="md:hidden">
             <button
@@ -38,25 +38,27 @@
           :items="['admin', 'user', 'test']"
         ></dropDown> -->
         <div class="flex flex-row md:flex-row justify-center md:block -mx-2">
-          <button
-            @click="gotoHome"
-            class="
-              text-gray-900
-              rounded
-              hover:bg-red-400
-              hover:text-gray-100
-              hover:font-medium
-              py-2
-              px-2
-              md:mx-2
-              font-bold
-              tracking-wider
-              text-xs
-              md:text-sm
-            "
-          >
-            home
-          </button>
+          <router-link to="/">
+            <button
+              @click="gotoHome"
+              class="
+                text-gray-900
+                rounded
+                hover:bg-red-400
+                hover:text-gray-100
+                hover:font-medium
+                py-2
+                px-2
+                md:mx-2
+                font-bold
+                tracking-wider
+                text-xs
+                md:text-sm
+              "
+            >
+              home
+            </button>
+          </router-link>
           <button
             v-if="this.$store.state.auth.loggedIn"
             @click="gotoUserTickets"
