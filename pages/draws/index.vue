@@ -191,7 +191,21 @@
           justify-start
         "
       >
-        <div class="relative rounded shadow-lg p-6 dark:bg-gray-800 bg-white">
+        <div
+          class="
+            relative
+            rounded
+            shadow-lg
+            p-6
+            dark:bg-gray-800
+            bg-white
+            flex flex-col
+            items-start
+            justify-center
+            w-full
+            space-y-4
+          "
+        >
           <div class="flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -225,107 +239,150 @@
             v-model="form.description"
             class="
               w-full
-              pl-10
+              pl-2
               pr-3
               py-2
               rounded-lg
-              border-2 border-gray-200
+              border-2
               outline-none
               focus:border-indigo-500
             "
             placeholder="Descrition of draw"
+            :class="`${
+              form.description == '' && error != ''
+                ? 'border-red-200'
+                : 'border-gray-200'
+            }`"
           />
-
-          <label for="" class="text-xs font-semibold px-1">Start Date</label>
-          <VueTailWindPicker
-            :init="false"
-            @change="(v) => (form.startPeriodDate = v)"
-          >
-            <input
-              v-model="form.startPeriodDate"
-              class="
-                w-full
-                pl-10
-                pr-3
-                py-2
-                rounded-lg
-                border-2 border-gray-200
-                outline-none
-                focus:border-indigo-500
-              "
-              placeholder="Start period"
-            />
-          </VueTailWindPicker>
-
-          <label for="" class="text-xs font-semibold px-1">Draw Date</label>
-          <VueTailWindPicker :init="false" @change="(v) => (form.drawDate = v)">
-            <input
-              v-model="form.drawDate"
-              class="
-                w-full
-                pl-10
-                pr-3
-                py-2
-                rounded-lg
-                border-2 border-gray-200
-                outline-none
-                focus:border-indigo-500
-              "
-              placeholder="Draw date"
-            />
-          </VueTailWindPicker>
-          <label for="" class="text-xs font-semibold px-1">Ticket price</label>
-          <input
-            type="number"
-            v-model="form.ticketPrice"
-            class="
-              w-full
-              pl-10
-              pr-3
-              py-2
-              rounded-lg
-              border-2 border-gray-200
-              outline-none
-              focus:border-indigo-500
-            "
-            placeholder="Ticket price"
-          />
-
+          <div class="flex space-x-4">
+            <div class="flex flex-col items-start space-y-4">
+              <label for="" class="text-xs font-semibold px-1"
+                >Start Date</label
+              >
+              <VueTailWindPicker
+                :init="false"
+                @change="(v) => (form.startPeriodDate = v)"
+                class="w-full"
+              >
+                <input
+                  v-model="form.startPeriodDate"
+                  class="
+                    w-full
+                    pl-2
+                    pr-3
+                    py-2
+                    rounded-lg
+                    border-2
+                    outline-none
+                    focus:border-indigo-500
+                  "
+                  placeholder="Start period"
+                />
+              </VueTailWindPicker>
+            </div>
+            <div class="flex flex-col items-start space-y-4">
+              <label for="" class="text-xs font-semibold px-1">Draw Date</label>
+              <VueTailWindPicker
+                :init="false"
+                @change="(v) => (form.drawDate = v)"
+                class="w-full"
+              >
+                <input
+                  v-model="form.drawDate"
+                  class="
+                    w-full
+                    pl-2
+                    pr-3
+                    py-2
+                    rounded-lg
+                    border-2
+                    outline-none
+                    focus:border-indigo-500
+                  "
+                  placeholder="Draw date"
+                  :class="`${
+                    form.drawDate == '' && error != ''
+                      ? 'border-red-200'
+                      : 'border-gray-200'
+                  }`"
+                />
+              </VueTailWindPicker>
+            </div>
+          </div>
           <label for="" class="text-xs font-semibold px-1">License</label>
           <input
             v-model="form.licence"
             class="
               w-full
-              pl-10
+              pl-2
               pr-3
               py-2
               rounded-lg
-              border-2 border-gray-200
               outline-none
+              border-2
               focus:border-indigo-500
             "
             placeholder="License"
+            :class="`${
+              form.licence == '' && error != ''
+                ? 'border-red-200'
+                : 'border-gray-200'
+            }`"
           />
 
-          <label for="" class="text-xs font-semibold px-1"
-            >Number of tickets</label
-          >
-          <input
-            v-model="form.numberOfTickets"
-            class="
-              w-full
-              pl-10
-              pr-3
-              py-2
-              rounded-lg
-              border-2 border-gray-200
-              outline-none
-              focus:border-indigo-500
-            "
-            placeholder="License"
-          />
+          <div class="flex space-x-4">
+            <div class="flex flex-col items-start space-y-4">
+              <label for="" class="text-xs font-semibold px-1"
+                >Ticket price</label
+              >
+              <input
+                type="number"
+                v-model="form.ticketPrice"
+                class="
+                  w-full
+                  pl-2
+                  pr-3
+                  py-2
+                  rounded-lg
+                  outline-none
+                  border-2
+                  focus:border-indigo-500
+                "
+                placeholder="Ticket price"
+                :class="`${
+                  form.ticketPrice == '' && error != ''
+                    ? 'border-red-200'
+                    : 'border-gray-200'
+                }`"
+              />
+            </div>
+            <div class="flex flex-col items-start space-y-4">
+              <label for="" class="text-xs font-semibold px-1"
+                >Number of tickets</label
+              >
+              <input
+                v-model="form.numberOfTickets"
+                class="
+                  w-full
+                  pl-2
+                  pr-3
+                  py-2
+                  rounded-lg
+                  border-2
+                  outline-none
+                  focus:border-indigo-500
+                "
+                placeholder="License"
+                :class="`${
+                  form.numberOfTickets == '' && error != ''
+                    ? 'border-red-200'
+                    : 'border-gray-200'
+                }`"
+              />
+            </div>
+          </div>
 
-          <div class="flex items-center justify-between pt-6">
+          <div class="flex items-center justify-between pt-6 w-full">
             <button
               class="
                 py-3.5
@@ -345,6 +402,22 @@
             >
               {{ form.id == "" ? "Add" : "Update" }}
             </button>
+          </div>
+
+          <div
+            class="
+              flex
+              p-2
+              bg-red-100
+              mt-2
+              rounded
+              w-full
+              items-center
+              justify-center
+            "
+            v-show="error != ''"
+          >
+            {{ error }}
           </div>
           <div
             class="
@@ -435,19 +508,30 @@ export default {
       }
     },
     async addDraw() {
-      if (this.form.id == "") {
-        let response = await this.$axios.post("/api/draw/new", this.form);
-        this.draws.push(response.data);
+      if (
+        this.form.description == "" ||
+        this.form.drawDate == "" ||
+        this.form.licence == "" ||
+        this.form.startPeriodDate == "" ||
+        this.form.numberOfTickets == ""
+      ) {
+        this.error = "Some fields are required";
       } else {
-        let response = await this.$axios.put(
-          `/api/draw/${this.form.id}`,
-          this.form
-        );
-      }
+        if (this.form.id == "") {
+          let response = await this.$axios.post("/api/draw/new", this.form);
+          this.draws.push(response.data);
+        } else {
+          let response = await this.$axios.put(
+            `/api/draw/${this.form.id}`,
+            this.form
+          );
+        }
 
-      this.modalHandler();
+        this.modalHandler();
+      }
     },
     modalHandler(val) {
+      this.error = "";
       this.form = {
         id: "",
         startPeriodDate: "",
