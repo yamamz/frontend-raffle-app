@@ -72,12 +72,12 @@ export default {
 </script>
 
 <style>
-button {
+/* button {
   cursor: pointer;
   &:focus {
     outline: none;
   }
-}
+} */
 
 /* Animations */
 .fade-enter-active,

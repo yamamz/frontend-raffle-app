@@ -133,7 +133,7 @@
                     class="text-indigo-600 hover:text-indigo-900"
                     @click="setActive(!draw.active, draw)"
                   >
-                    {{ draw.active ? "Set In Active" : "Set Active" }}
+                    {{ draw.active ? "Diactivate" : "Activate" }}
                   </button>
                 </td>
 

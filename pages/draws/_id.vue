@@ -17,20 +17,77 @@
           @click="printOnlineSoldTickets(false)"
           class="rounded bg-red-500 text-white text-base px-8 py-2 ml-2"
         >
-          Print Online Tickets
+          <div class="flex items-center justify-center">
+            <div
+              v-show="busyDownloadingOnline && !isFreeTicketDownload"
+              class="
+                loader
+                ease-linear
+                rounded-full
+                border-4 border-t-4 border-gray-200
+                h-6
+                w-6
+                mr-2
+              "
+            ></div>
+            <div>
+              {{
+                busyDownloadingOnline ? "dowloading" : "download online Tickets"
+              }}
+            </div>
+          </div>
         </button>
+
         <button
           @click="printOnlineSoldTickets(true)"
           class="rounded bg-green-500 text-white text-base px-8 py-2 ml-2"
         >
-          Print free Tickets
+          <div class="flex items-center justify-center">
+            <div
+              v-show="busyDownloadingOnline && isFreeTicketDownload"
+              class="
+                loader
+                ease-linear
+                rounded-full
+                border-4 border-t-4 border-gray-200
+                h-6
+                w-6
+                mr-2
+              "
+            ></div>
+            <div>
+              {{
+                busyDownloadingOnline ? "dowloading" : "download free Tickets"
+              }}
+            </div>
+          </div>
         </button>
 
         <button
           @click="printTicketsWithDuplicate"
           class="rounded bg-indigo-500 text-white text-base px-8 py-2 ml-2"
         >
-          Print offline Tickets
+          <div class="flex items-center justify-center">
+            <div
+              v-show="busyDownloadingOffline"
+              class="
+                loader
+                ease-linear
+                rounded-full
+                border-4 border-t-4 border-gray-200
+                h-6
+                w-6
+                mr-2
+              "
+            ></div>
+            <div>
+              {{
+                busyDownloadingOffline
+                  ? "dowloading"
+                  : "download offline Tickets"
+              }}
+            </div>
+          </div>
         </button>
 
         <button
@@ -228,6 +285,9 @@ export default {
   middleware: "auth",
   data() {
     return {
+      busyDownloadingOffline: false,
+      busyDownloadingOnline: false,
+      isFreeTicketDownload: false,
       tickets: [],
       showModal: false,
       ticketPcs: 0,
@@ -254,6 +314,7 @@ export default {
               ticketPcs: this.ticketPcs,
             }
           );
+
           this.showModal = false;
           response.data.tickets.forEach((element) => {
             element.phone = element.User.contact;
@@ -272,6 +333,7 @@ export default {
       return `${da}-${mo}-${ye}`;
     },
     async printTicketsWithDuplicate() {
+      this.busyDownloadingOffline = true;
       let ticketsContents = [];
       let filterOnlineTickets = this.tickets.filter(
         (el) => el.isSaleOnline == false
@@ -443,20 +505,29 @@ export default {
       }
 
       var docDefinition = {
-        content: [
-          ticketsContents,
-          // basic usage
-          // { qr: "text in QR" },
-          // // colored QR
-          // { qr: "text in QR", foreground: "red", background: "yellow" },
-          // // resized QR
-          // { qr: "text in QR", fit: "500" },
-        ],
+        content: [ticketsContents],
       };
-      let pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-      pdfDocGenerator.print();
+
+      let response = await this.$axios.post(
+        "/api/ticket/generatePdf",
+        {
+          docDefinition: docDefinition,
+        },
+        { responseType: "blob" }
+      );
+      this.busyDownloadingOffline = false;
+
+      let objectUrl = await URL.createObjectURL(response.data);
+      var link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = "offline-tickets.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     },
     async printOnlineSoldTickets(isFree) {
+      this.isFreeTicketDownload = isFree;
+      this.busyDownloadingOnline = true;
       let ticketsContents = [];
       let filterOnlineTickets = [];
       if (!isFree) {
@@ -760,8 +831,26 @@ export default {
       var docDefinition = {
         content: [ticketsContents],
       };
-      let pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-      pdfDocGenerator.print();
+      let response = await this.$axios.post(
+        "/api/ticket/generatePdf",
+        {
+          docDefinition: docDefinition,
+        },
+        { responseType: "blob" }
+      );
+      this.busyDownloadingOnline = false;
+      let objectUrl = await URL.createObjectURL(response.data);
+      var link = document.createElement("a");
+      link.href = objectUrl;
+      if (isFree) {
+        link.download = "free-tickets.pdf";
+      } else {
+        link.download = "online-tickets.pdf";
+      }
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     },
   },
   async created() {
@@ -780,5 +869,27 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css");
+.loader {
+  border-top-color: #3498db;
+  -webkit-animation: spinner 1.5s linear infinite;
+  animation: spinner 1.5s linear infinite;
+}
+
+@-webkit-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 </style>
