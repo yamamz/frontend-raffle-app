@@ -6,8 +6,9 @@
       flex
       items-center
       justify-center
-      px-5
-      py-2
+      md:px-5
+      md:py-2
+      px-2
     "
   >
     <p
@@ -26,7 +27,10 @@
         soldOutTickets ? "All tickets are soldout" : "No raffle draw is active"
       }}
     </p>
-    <div v-show="drawActive" class="bg-indigo-100 rounded-lg shadow-lg p-8">
+    <div
+      v-show="drawActive"
+      class="bg-indigo-100 rounded-lg shadow-lg md:p-8 p-2"
+    >
       <div>
         <div class="flex justify-center items-center mb-4">
           <p
@@ -57,7 +61,17 @@
           </div>
         </div>
         <div>
-          <p class="tracking-widest flex justify-center items-center mb-4">
+          <p
+            class="
+              tracking-widest
+              flex
+              text-xs
+              md:text-base
+              justify-center
+              items-center
+              mb-4
+            "
+          >
             In every $20 transaction 1 ticket is free, the free tickets are
             drawn for consolation prices
           </p>
@@ -85,8 +99,8 @@
               Each entry
             </p>
           </div>
-          <div class="vl"></div>
-          <div class="flex flex-col ml-2 w-1/3">
+          <div class="vl hidden md:block"></div>
+          <div class="flex flex-col ml-2 justify-center md:w-1/3">
             <p class="text-xs pb-2 font-bold tracking-widest">NAME:</p>
             <p class="text-xs tracking-widest">
               {{ this.$auth.state.user.firstName }}
@@ -461,7 +475,10 @@ export default {
     let filterActive = response.data.draws.filter((el) => el.active == true);
     if (filterActive.length > 0) {
       this.draw = filterActive[0];
-      if (this.draw.Tickets.length >= this.draw.numberOfTickets) {
+      if (
+        this.draw.Tickets.filter((el) => el.isSaleOnline).length >=
+        this.draw.numberOfTickets
+      ) {
         this.soldOutTickets = true;
         this.drawActive = false;
       } else {

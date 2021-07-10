@@ -13,10 +13,12 @@
         "
       >
         <div>
-          <h2 class="text-3xl font-semibold text-gray-800 md:text-4xl mb-8">
+          <h2
+            class="text-3xl font-semibold text-gray-800 md:text-4xl mb-8 mt-4"
+          >
             50/50 Draw <span class="text-indigo-600">Fundraising</span>
           </h2>
-          <p class="mt-2 text-base text-gray-500 md:text-lg mb-4">
+          <p class="mt-2 text-sm text-gray-500 md:text-lg mb-4">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Blanditiis
             commodi cum cupiditate ducimus, fugit harum id necessitatibus odio
             quam quasi, quibusdam rem tempora voluptates. Cumque debitis
@@ -26,7 +28,8 @@
             <button
               class="
                 px-4
-                py-3
+                py-2
+                md:py-3
                 bg-indigo-600
                 text-gray-200 text-lg
                 font-semibold
@@ -41,7 +44,8 @@
               class="
                 mx-4
                 px-4
-                py-3
+                py-2
+                md:py-3
                 bg-red-300
                 text-white text-lg
                 font-semibold

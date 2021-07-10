@@ -38,7 +38,7 @@
           :items="['admin', 'user', 'test']"
         ></dropDown> -->
         <div class="flex flex-row md:flex-row justify-center md:block -mx-2">
-          <router-link to="/">
+          <router-link :to="{ name: 'index' }">
             <button
               @click="gotoHome"
               class="

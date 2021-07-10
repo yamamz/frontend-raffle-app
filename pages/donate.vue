@@ -1,16 +1,19 @@
 <template>
   <div
     class="
-      min-w-screen min-h-screen
+      min-w-screen
+      h-4/5
+      md:min-h-screen
       bg-gray-50
       flex
-      items-center
+      md:items-center
       justify-center
-      px-5
-      py-2
+      p-2
+      md:px-5
+      md:py-2
     "
   >
-    <div class="bg-indigo-100 rounded-lg shadow-lg p-8">
+    <div class="bg-indigo-100 rounded-lg shadow-lg p-2 w-full">
       <div>
         <div class="flex justify-center items-center mb-4">
           <p
@@ -149,6 +152,7 @@ import key from "~/config/keys";
 var stripe = Stripe(key.stripePublishableKey);
 import Swal from "sweetalert2";
 export default {
+  auth: "guest",
   components: {
     StripeElementCard,
   },

@@ -2,13 +2,16 @@
   <div>
     <div
       class="
-        min-w-screen min-h-screen
+        min-w-screen
+        md:min-h-screen
         bg-gray-50
         flex
-        items-center
+        md:items-center
         justify-center
-        px-5
-        py-5
+        p-2
+        h-4/5
+        md:px-5
+        md:py-5
       "
     >
       <div
@@ -16,7 +19,7 @@
           bg-gray-100
           text-gray-500
           rounded-3xl
-          shadow-xl
+          shadow-md
           w-full
           overflow-hidden
         "
@@ -228,7 +231,7 @@
               />
             </svg>
           </div>
-          <div class="w-full md:w-1/2 py-10 px-5 md:px-10">
+          <div class="w-full md:w-1/2 py-10 px-2 md:px-10">
             <div class="text-center mb-10">
               <h1 class="font-bold text-3xl text-gray-900">LOGIN</h1>
               <p>Enter you login information here</p>
@@ -360,9 +363,11 @@
               <div class="text-center mb-10">
                 <p>
                   don't have account
-                  <a @click="register" class="text-indigo-500 cursor-pointer"
-                    >register here</a
-                  >
+                  <router-link to="/register">
+                    <span class="text-indigo-900 cursor-pointer"
+                      >register here</span
+                    >
+                  </router-link>
                 </p>
               </div>
             </div>

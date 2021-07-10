@@ -5,10 +5,12 @@
         min-w-screen min-h-screen
         bg-gray-50
         flex
-        items-center
+        :items-center
         justify-center
-        px-5
-        py-5
+        :px-5
+        :py-5
+        p-2
+        h-4/5
       "
     >
       <div
@@ -16,7 +18,7 @@
           bg-gray-100
           text-gray-500
           rounded-3xl
-          shadow-xl
+          shadow-md
           w-full
           overflow-hidden
         "
@@ -228,10 +230,12 @@
               />
             </svg>
           </div>
-          <div class="w-full md:w-1/2 py-10 px-5 md:px-10">
+          <div class="w-full md:w-1/2 py-10 px-2 md:px-10">
             <div class="text-center mb-10">
-              <h1 class="font-bold text-3xl text-gray-900">REGISTER</h1>
-              <p>
+              <h1 class="font-bold text-2xl md:text-3xl text-gray-900">
+                REGISTER
+              </h1>
+              <p class="text-sm p-2 tracking-wider">
                 Enter your information to register note:
                 <span class="font-bold"
                   >these information you will be enter is use for ticket
@@ -240,8 +244,8 @@
               </p>
             </div>
             <div>
-              <div class="flex -mx-3">
-                <div class="w-1/2 px-3 mb-5">
+              <div class="flex flex-col md:flex-row -mx-3">
+                <div class="w-full md:w-1/2 px-3 mb-5">
                   <label for="" class="text-xs font-semibold px-1"
                     >First name</label
                   >
@@ -280,7 +284,7 @@
                     />
                   </div>
                 </div>
-                <div class="w-1/2 px-3 mb-5">
+                <div class="w-full md:w-1/2 px-3 mb-5">
                   <label for="" class="text-xs font-semibold px-1"
                     >Last name</label
                   >
