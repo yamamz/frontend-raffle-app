@@ -8,7 +8,6 @@ export default async function ({ $auth, redirect }) {
     if (filterRolesByModerator.length > 0) {
 
     } else {
-
         redirect('/')
         Swal.fire("Opps!", "You don't have permission to register a user", "error");
     }
