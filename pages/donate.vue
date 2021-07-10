@@ -11,7 +11,7 @@
       px-4
     "
   >
-    <div class="bg-indigo-100 rounded-lg shadow-lg p-2 w-full md:w-1/2">
+    <div class="bg-indigo-100 rounded-lg shadow-lg p-2 md:p-4 w-full md:w-1/2">
       <div>
         <div class="flex justify-center items-center mb-4">
           <p
@@ -150,6 +150,7 @@ import key from "~/config/keys";
 var stripe = Stripe(key.stripePublishableKey);
 import Swal from "sweetalert2";
 export default {
+  auth: "guest",
   components: {
     StripeElementCard,
   },

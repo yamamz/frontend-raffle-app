@@ -2,15 +2,16 @@
   <div>
     <div
       class="
-        min-w-screen min-h-screen
+        min-w-screen
+        md:min-h-screen
         bg-gray-50
         flex
-        :items-center
+        md:items-center
         justify-center
-        md:px-5
-        md:py-5
         p-2
         h-4/5
+        md:px-5
+        md:py-20
       "
     >
       <div

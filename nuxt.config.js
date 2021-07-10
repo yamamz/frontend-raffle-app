@@ -20,7 +20,7 @@ export default {
     prefix: false
   },
   head: {
-    title: 'frontend',
+    title: 'Meditation Garden Draw app',
     htmlAttrs: {
       lang: 'en'
     },
@@ -30,7 +30,7 @@ export default {
       { hid: 'description', name: 'description', content: '' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'icon', type: 'image/x-icon', href: '/tickets.ico' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Quicksand' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Source+Code+Pro' },

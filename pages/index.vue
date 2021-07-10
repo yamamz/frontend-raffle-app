@@ -148,6 +148,7 @@
 import Swal from "sweetalert2";
 import dropDown from "./../components/Drop-down.vue";
 export default {
+  auth: "guest",
   components: {
     dropDown,
   },
