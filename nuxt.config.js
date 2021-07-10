@@ -89,6 +89,7 @@ export default {
   auth: {
     strategies: {
       local: {
+
         token: {
           property: 'accessToken',
           required: true,
@@ -108,6 +109,7 @@ export default {
     }
   },
   router: {
+
     middleware: ['auth']
   },
 

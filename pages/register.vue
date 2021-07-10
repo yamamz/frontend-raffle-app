@@ -7,8 +7,8 @@
         flex
         :items-center
         justify-center
-        :px-5
-        :py-5
+        md:px-5
+        md:py-5
         p-2
         h-4/5
       "

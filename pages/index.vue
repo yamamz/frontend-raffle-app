@@ -148,7 +148,6 @@
 import Swal from "sweetalert2";
 import dropDown from "./../components/Drop-down.vue";
 export default {
-  auth: "guest",
   components: {
     dropDown,
   },
@@ -204,7 +203,7 @@ export default {
       }
     },
     gotoDonate() {
-      this.$router.push({ path: "/donate" });
+      this.$router.push({ name: "donate" });
     },
   },
   async created() {

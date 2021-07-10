@@ -38,9 +38,8 @@
           :items="['admin', 'user', 'test']"
         ></dropDown> -->
         <div class="flex flex-row md:flex-row justify-center md:block -mx-2">
-          <router-link :to="{ name: 'index' }">
+          <router-link to="/">
             <button
-              @click="gotoHome"
               class="
                 text-gray-900
                 rounded
@@ -261,7 +260,6 @@ export default {
   computed: {
     isModerator() {
       let user = this.$store.state.auth.user;
-      console.log(user);
       if (user) {
         let filterRolesByModerator = user.Roles.filter(
           (el) => el.name == "moderator"
