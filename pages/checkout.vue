@@ -163,8 +163,6 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 import key from "~/config/keys";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-var stripe = Stripe(key.stripePublishableKey);
-
 export default {
   middleware: "auth",
   components: {
@@ -183,6 +181,7 @@ export default {
       successPayment: false,
       loading: false,
       ticketBase64: "",
+      stripe: null,
       draw: {
         description: "",
         ticketPrice: 5,
@@ -241,7 +240,7 @@ export default {
       this.loading = true;
       this.isLoading(true);
 
-      let result = await stripe.createToken(this.card);
+      let result = await this.stripe.createToken(this.card);
       if (result.error) {
         // Inform the customer that there was an error.
         var errorElement = document.getElementById("card-error");
@@ -407,7 +406,7 @@ export default {
 
       document.querySelector("button").disabled = true;
 
-      var elements = stripe.elements();
+      var elements = this.stripe.elements();
       var style = {
         base: {
           color: "#32325d",
@@ -438,8 +437,12 @@ export default {
       this.clientSecret = response.data.setupIntent.client_secret;
     },
   },
-  mounted() {
-    var elements = stripe.elements();
+  async mounted() {
+    let stripePublicKey = await this.$axios.get(
+      "/api/payment/getStripePublicKey"
+    );
+    this.stripe = Stripe(stripePublicKey.data.key);
+    var elements = this.stripe.elements();
 
     document.querySelector("button").disabled = true;
 

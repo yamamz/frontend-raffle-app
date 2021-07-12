@@ -1,3 +1,3 @@
 export default {
-    stripePublishableKey: process.env.NUXT_PUBLIC_PAYMENT_TOKEN
+    stripePublishableKey: process.env.STRIPE_PUB_KEY
 }

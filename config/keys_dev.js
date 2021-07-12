@@ -1,3 +1,3 @@
 export default {
-    stripePublishableKey: 'pk_test_51IvuuiEHEquBk10HT8SXUX4Zj19QIqNUQjloFVe18IoY9gJPjRDxuqq0Ho2mqI5FVVFJGiUSKQOLYDuowfBEb05f00EeabU3OF'
+    stripePublishableKey: ''
 }

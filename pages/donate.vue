@@ -147,10 +147,10 @@
 <script>
 import { StripeElementCard } from "@vue-stripe/vue-stripe";
 import key from "~/config/keys";
-var stripe = Stripe(key.stripePublishableKey);
+
 import Swal from "sweetalert2";
 export default {
-  auth: "guest",
+  middleware: "auth",
   components: {
     StripeElementCard,
   },
@@ -165,6 +165,7 @@ export default {
       isCheckOut: false,
       successPayment: false,
       loading: false,
+      stripe: null,
 
       draw: {
         description: "",
@@ -191,8 +192,12 @@ export default {
       }
     },
   },
-  mounted() {
-    var elements = stripe.elements();
+  async mounted() {
+    let stripePublicKey = await this.$axios.get(
+      "/api/payment/getStripePublicKey"
+    );
+    this.stripe = Stripe(stripePublicKey.data.key);
+    var elements = this.stripe.elements();
 
     document.querySelector("button").disabled = true;
 
@@ -263,7 +268,7 @@ export default {
       this.loading = true;
       this.isLoading(true);
 
-      let result = await stripe.createToken(this.card);
+      let result = await this.stripe.createToken(this.card);
       if (result.error) {
         // Inform the customer that there was an error.
         var errorElement = document.getElementById("card-error");
