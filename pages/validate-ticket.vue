@@ -57,7 +57,7 @@
 import Swal from "sweetalert2";
 import { QrcodeStream } from "vue-qrcode-reader";
 export default {
-  middleware: "auth-moderator",
+  middleware: "auth-admin",
   components: {
     QrcodeStream,
   },

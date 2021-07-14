@@ -174,10 +174,10 @@ export default {
         drawDate: new Date(),
       },
       form: {
-        fullname: "",
-        phone: "",
-        email: "",
-        address: "",
+        fullname: `${this.$auth.state.user.firstName} ${this.$auth.state.user.lastName}`,
+        phone: this.$auth.state.user.contact,
+        email: this.$auth.state.user.email,
+        address: this.$auth.state.user.address,
         amount: 5,
       },
     };

@@ -124,7 +124,7 @@
             class="p-4"
           >
             <span slot="draw date" slot-scope="props">
-              {{ formatDate(new Date(props.row.Draw.drawDate)) }}
+              {{ formatDate(new Date(props.row.draw.drawDate)) }}
             </span>
             <div slot="free" slot-scope="props">
               <span
@@ -282,7 +282,7 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 export default {
-  middleware: "auth-moderator",
+  middleware: "auth-admin",
   data() {
     return {
       busyDownloadingOffline: false,
@@ -309,7 +309,7 @@ export default {
           let response = await this.$axios.post(
             "/api/ticket/generateOffTicket",
             {
-              userId: this.$auth.state.user.id,
+              userId: this.$auth.state.user._id,
               drawId: this.$route.params.id,
               ticketPcs: this.ticketPcs,
             }
@@ -317,10 +317,10 @@ export default {
 
           this.showModal = false;
           response.data.tickets.forEach((element) => {
-            element.phone = element.User.contact;
-            element.email = element.User.email;
-            element.fullname = `${element.User.firstName} ${element.User.lastName}`;
-            element.address = element.User.address;
+            element.phone = element.user.contact;
+            element.email = element.user.email;
+            element.fullname = `${element.user.firstName} ${element.user.lastName}`;
+            element.address = element.user.address;
           });
           this.tickets = response.data.tickets;
         }
@@ -350,7 +350,7 @@ export default {
                   type: "none",
                   ol: [
                     {
-                      qr: `${filterOnlineTickets[i].id} ${filterOnlineTickets[i].ticketNumber} ${filterOnlineTickets[i].Draw.licence} ${filterOnlineTickets[i].User.email}`,
+                      qr: `${filterOnlineTickets[i].id} ${filterOnlineTickets[i].ticketNumber} ${filterOnlineTickets[i].draw.licence} ${filterOnlineTickets[i].user.email}`,
                       fit: "110",
                     },
                     {
@@ -391,13 +391,13 @@ export default {
                           fontSize: 8,
 
                           bold: true,
-                          text: `${filterOnlineTickets[i].Draw.description}`.toUpperCase(),
+                          text: `${filterOnlineTickets[i].draw.description}`.toUpperCase(),
                         },
 
                         {
                           fontSize: 8,
 
-                          text: `License No: ${filterOnlineTickets[i].Draw.licence}`,
+                          text: `License No: ${filterOnlineTickets[i].draw.licence}`,
                         },
                         {
                           margin: [0, 8, 0, 0],
@@ -408,7 +408,7 @@ export default {
                           margin: [0, 8, 0, 0],
                           fontSize: 8,
                           text: `Draw Date: ${this.formatDate(
-                            new Date(filterOnlineTickets[i].Draw.drawDate)
+                            new Date(filterOnlineTickets[i].draw.drawDate)
                           )}`,
                         },
                       ],
@@ -425,7 +425,7 @@ export default {
                       type: "none",
                       ol: [
                         {
-                          qr: `${filterOnlineTickets[i].id} ${filterOnlineTickets[i].ticketNumber} ${filterOnlineTickets[i].Draw.licence} ${filterOnlineTickets[i].User.email}`,
+                          qr: `${filterOnlineTickets[i].id} ${filterOnlineTickets[i].ticketNumber} ${filterOnlineTickets[i].draw.licence} ${filterOnlineTickets[i].user.email}`,
                           fit: "110",
                         },
                         {
@@ -468,13 +468,13 @@ export default {
                           fontSize: 8,
 
                           bold: true,
-                          text: `${filterOnlineTickets[i].Draw.description}`.toUpperCase(),
+                          text: `${filterOnlineTickets[i].draw.description}`.toUpperCase(),
                         },
 
                         {
                           fontSize: 8,
 
-                          text: `License No: ${filterOnlineTickets[i].Draw.licence}`,
+                          text: `License No: ${filterOnlineTickets[i].draw.licence}`,
                         },
                         {
                           margin: [0, 8, 0, 0],
@@ -485,7 +485,7 @@ export default {
                           margin: [0, 8, 0, 0],
                           fontSize: 8,
                           text: `Draw Date: ${this.formatDate(
-                            new Date(filterOnlineTickets[i].Draw.drawDate)
+                            new Date(filterOnlineTickets[i].draw.drawDate)
                           )}`,
                         },
                       ],
@@ -555,8 +555,8 @@ export default {
                       {
                         qr: `${filterOnlineTickets[i - 1].id} ${
                           filterOnlineTickets[i - 1].ticketNumber
-                        } ${filterOnlineTickets[i - 1].Draw.licence} ${
-                          filterOnlineTickets[i - 1].User.email
+                        } ${filterOnlineTickets[i - 1].draw.licence} ${
+                          filterOnlineTickets[i - 1].user.email
                         }`,
                         fit: "110",
                       },
@@ -599,7 +599,7 @@ export default {
 
                             bold: true,
                             text: `${
-                              filterOnlineTickets[i - 1].Draw.description
+                              filterOnlineTickets[i - 1].draw.description
                             }`.toUpperCase(),
                           },
 
@@ -607,7 +607,7 @@ export default {
                             fontSize: 8,
 
                             text: `License No: ${
-                              filterOnlineTickets[i - 1].Draw.licence
+                              filterOnlineTickets[i - 1].draw.licence
                             }`,
                           },
                           {
@@ -619,7 +619,7 @@ export default {
                             margin: [0, 8, 0, 0],
                             fontSize: 8,
                             text: `Draw Date: ${this.formatDate(
-                              new Date(filterOnlineTickets[i - 1].Draw.drawDate)
+                              new Date(filterOnlineTickets[i - 1].draw.drawDate)
                             )}`,
                           },
                         ],
@@ -636,7 +636,7 @@ export default {
                         type: "none",
                         ol: [
                           {
-                            qr: `${filterOnlineTickets[i].id} ${filterOnlineTickets[i].ticketNumber} ${filterOnlineTickets[i].Draw.licence} ${filterOnlineTickets[i].User.email}`,
+                            qr: `${filterOnlineTickets[i].id} ${filterOnlineTickets[i].ticketNumber} ${filterOnlineTickets[i].draw.licence} ${filterOnlineTickets[i].user.email}`,
                             fit: "110",
                           },
                           {
@@ -679,13 +679,13 @@ export default {
                             fontSize: 8,
 
                             bold: true,
-                            text: `${filterOnlineTickets[i].Draw.description}`.toUpperCase(),
+                            text: `${filterOnlineTickets[i].draw.description}`.toUpperCase(),
                           },
 
                           {
                             fontSize: 8,
 
-                            text: `License No: ${filterOnlineTickets[i].Draw.licence}`,
+                            text: `License No: ${filterOnlineTickets[i].draw.licence}`,
                           },
                           {
                             margin: [0, 8, 0, 0],
@@ -696,7 +696,7 @@ export default {
                             margin: [0, 8, 0, 0],
                             fontSize: 8,
                             text: `Draw Date: ${this.formatDate(
-                              new Date(filterOnlineTickets[i].Draw.drawDate)
+                              new Date(filterOnlineTickets[i].draw.drawDate)
                             )}`,
                           },
                         ],
@@ -733,10 +733,10 @@ export default {
                         filterOnlineTickets[filterOnlineTickets.length - 1]
                           .ticketNumber
                       } ${
-                        filterOnlineTickets[filterOnlineTickets.length - 1].Draw
+                        filterOnlineTickets[filterOnlineTickets.length - 1].draw
                           .licence
                       } ${
-                        filterOnlineTickets[filterOnlineTickets.length - 1].User
+                        filterOnlineTickets[filterOnlineTickets.length - 1].user
                           .email
                       }`,
                       fit: "110",
@@ -784,7 +784,7 @@ export default {
                           bold: true,
                           text: `${
                             filterOnlineTickets[filterOnlineTickets.length - 1]
-                              .Draw.description
+                              .draw.description
                           }`.toUpperCase(),
                         },
 
@@ -793,7 +793,7 @@ export default {
 
                           text: `License No: ${
                             filterOnlineTickets[filterOnlineTickets.length - 1]
-                              .Draw.licence
+                              .draw.licence
                           }`,
                         },
                         {
@@ -808,7 +808,7 @@ export default {
                             new Date(
                               filterOnlineTickets[
                                 filterOnlineTickets.length - 1
-                              ].Draw.drawDate
+                              ].draw.drawDate
                             )
                           )}`,
                         },
@@ -858,10 +858,10 @@ export default {
       "/api/ticket/getAllByDraw/" + this.$route.params.id
     );
     response.data.tickets.forEach((element) => {
-      element.phone = element.User.contact;
-      element.email = element.User.email;
-      element.fullname = `${element.User.firstName} ${element.User.lastName}`;
-      element.address = element.User.address;
+      element.phone = element.user?.contact ?? "";
+      element.email = element.user?.email ?? "";
+      element.fullname = `${element.user.firstName} ${element.user.lastName}`;
+      element.address = element.user.address;
     });
     this.tickets = response.data.tickets;
   },

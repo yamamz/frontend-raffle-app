@@ -157,6 +157,7 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
 import { StripeElementCard } from "@vue-stripe/vue-stripe";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
@@ -253,7 +254,7 @@ export default {
             amount: this.price,
             token: result.token.id,
             ticketPcs: this.ticketPcs,
-            userId: this.$auth.state.user.id,
+            userId: this.$auth.state.user._id,
             drawId: this.draw.id,
             ticketPrice: this.draw.ticketPrice,
             fullname: `${this.$auth.state.user.firstName} ${this.$auth.state.user.lastName}`,
@@ -479,7 +480,7 @@ export default {
     if (filterActive.length > 0) {
       this.draw = filterActive[0];
       if (
-        this.draw.Tickets.filter((el) => el.isSaleOnline).length >=
+        this.draw.tickets.filter((el) => el.isSaleOnline).length >=
         this.draw.numberOfTickets
       ) {
         this.soldOutTickets = true;

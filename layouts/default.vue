@@ -261,10 +261,7 @@ export default {
     isModerator() {
       let user = this.$store.state.auth.user;
       if (user) {
-        let filterRolesByModerator = user.Roles.filter(
-          (el) => el.name == "moderator"
-        );
-        if (filterRolesByModerator.length > 0) {
+        if (user.role == "admin") {
           return true;
         }
       }

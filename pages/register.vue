@@ -625,13 +625,14 @@ export default {
           this.error = "all fields are required";
         } else {
           this.loading = true;
+          this.register.role = "user";
           await this.$axios.post("/api/auth/signup", this.register);
           Swal.fire("Success!", "Register successfully", "success");
           await this.userLogin();
           this.loading = false;
         }
       } catch (err) {
-        this.loading = true;
+        this.loading = false;
         this.error = err.response.data.message;
       }
     },
@@ -643,7 +644,6 @@ export default {
             password: this.register.password,
           },
         });
-        this.$router.push({ path: "/" });
       } catch (err) {
         this.loading = false;
         this.error = err.response.data.message;

@@ -14,7 +14,7 @@
             class="p-4"
           >
             <span slot="draw date" slot-scope="props">
-              {{ formatDate(new Date(props.row.Draw.drawDate)) }}
+              {{ formatDate(new Date(props.row.draw.drawDate)) }}
             </span>
             <div slot="free" slot-scope="props">
               <span
@@ -56,7 +56,7 @@ export default {
   },
   async created() {
     let response = await this.$axios.get(
-      "/api/ticket/getAllByUser/" + this.$auth.state.user.id
+      "/api/ticket/getAllByUser/" + this.$auth.state.user._id
     );
     this.tickets = response.data.tickets;
   },

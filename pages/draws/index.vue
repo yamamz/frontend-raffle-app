@@ -149,7 +149,7 @@
                   <button @click="edit(draw)" class="px-4 text-green-600">
                     Edit
                   </button>
-                  <router-link :to="`/draws/${draw.id}`">
+                  <router-link :to="`/draws/${draw._id}`">
                     <button class="text-white bg-indigo-500 rounded px-2">
                       View tickets
                     </button>
@@ -465,7 +465,7 @@
 <script>
 import Swal from "sweetalert2";
 export default {
-  middleware: "auth-moderator",
+  middleware: "auth-admin",
   components: { VueTailWindPicker: () => import("vue-tailwind-picker") },
   data() {
     return {
@@ -500,11 +500,11 @@ export default {
           );
         } else {
           draw.active = val;
-          await this.$axios.put(`/api/draw/${draw.id}`, { active: val });
+          await this.$axios.put(`/api/draw/${draw._id}`, { active: val });
         }
       } else {
         draw.active = val;
-        await this.$axios.put(`/api/draw/${draw.id}`, { active: val });
+        await this.$axios.put(`/api/draw/${draw._id}`, { active: val });
       }
     },
     async addDraw() {
